@@ -29,9 +29,9 @@ It is post-v1: not part of the v1 scope.
 
 ## Workflow
 
-1. Start with a design session that resolves the open topics in `docs/design.md` and records decisions there.
-2. Write `docs/interface.md` and `schemas/`.
-3. Implement test-first.
+1. The design is done: `docs/interface.md` is the single normative source, `docs/design.md` holds the decisions and `docs/plan.md` the staged plan.
+2. Implement test-first from the GitHub issues (each is expanded into small steps when picked up); `schemas/` and `docs/interface.md` change together.
+3. Keep the edit applier, the review rendering and the target checks free of `git apply`, `patch` and any shell on model output.
 
 ## Repository workflow
 

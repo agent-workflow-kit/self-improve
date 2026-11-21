@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/slot/request.json",
+  "title": "staged request",
+  "description": "inputs/1/request.json staged for the drafting session: ids, hashes, counts and enums only.",
+  "type": "object",
+  "properties": {
+    "proposal_id": {
+      "$ref": "../defs.json#/$defs/proposal_id"
+    },
+    "run_token": {
+      "type": "string",
+      "minLength": 16,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_-]{16,128}(?![\\s\\S])"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000
+    },
+    "target_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32,
+      "pattern": "^target(\\.[A-Za-z0-9]{1,16})?(?![\\s\\S])",
+      "description": "The staged file name; no path."
+    },
+    "target_sha256": {
+      "$ref": "../defs.json#/$defs/sha256"
+    },
+    "target_class": {
+      "$ref": "../defs.json#/$defs/target_class"
+    },
+    "risk": {
+      "$ref": "../defs.json#/$defs/risk"
+    },
+    "limits": {
+      "type": "object",
+      "properties": {
+        "max_pairs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "new_text_max_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "target_max_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_changed_ratio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "max_pairs",
+        "new_text_max_bytes",
+        "target_max_bytes",
+        "max_changed_ratio"
+      ],
+      "additionalProperties": false
+    },
+    "context": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32,
+            "pattern": "^context-[1-4](\\.[A-Za-z0-9]{1,16})?(?![\\s\\S])"
+          },
+          "sha256": {
+            "$ref": "../defs.json#/$defs/sha256"
+          }
+        },
+        "required": [
+          "name",
+          "sha256"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 4
+    }
+  },
+  "required": [
+    "proposal_id",
+    "run_token",
+    "revision",
+    "target_name",
+    "target_sha256",
+    "target_class",
+    "risk",
+    "limits",
+    "context"
+  ],
+  "additionalProperties": false
+}

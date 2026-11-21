@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/hooks/post-attention.json",
+  "title": "post-attention hook payload",
+  "description": "Stdin JSON when a proposal enters ready or failed, or scan keeps failing. Cannot undo; best effort, at most once.",
+  "type": "object",
+  "properties": {
+    "tool": {
+      "const": "self-improve"
+    },
+    "hook": {
+      "const": "post-attention"
+    },
+    "object_type": {
+      "enum": [
+        "proposal",
+        "scan"
+      ]
+    },
+    "object_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}(?![\\s\\S])"
+    },
+    "event_id": {
+      "$ref": "../defs.json#/$defs/event_id"
+    },
+    "labels": {
+      "$ref": "../defs.json#/$defs/labels"
+    },
+    "reads_third_party": {
+      "const": false
+    },
+    "tainted": {
+      "const": false
+    },
+    "reason": {
+      "enum": [
+        "proposal_ready",
+        "draft_failed",
+        "scan_failing"
+      ]
+    },
+    "details": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "retro_id": {
+              "$ref": "../defs.json#/$defs/retro_id"
+            },
+            "candidate_id": {
+              "$ref": "../defs.json#/$defs/candidate_id"
+            },
+            "failure_reason": {
+              "anyOf": [
+                {
+                  "$ref": "../defs.json#/$defs/failed_reason"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "retro_id",
+            "candidate_id",
+            "failure_reason"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "consecutive_failures": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "first_failed_at": {
+              "$ref": "../defs.json#/$defs/timestamp"
+            },
+            "last_failed_at": {
+              "$ref": "../defs.json#/$defs/timestamp"
+            }
+          },
+          "required": [
+            "consecutive_failures",
+            "first_failed_at",
+            "last_failed_at"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "required": [
+    "tool",
+    "hook",
+    "object_type",
+    "object_id",
+    "event_id",
+    "labels",
+    "reads_third_party",
+    "tainted",
+    "reason",
+    "details"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "reason": {
+            "enum": [
+              "proposal_ready",
+              "draft_failed"
+            ]
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "then": {
+        "properties": {
+          "object_type": {
+            "const": "proposal"
+          },
+          "details": {
+            "required": [
+              "retro_id",
+              "candidate_id",
+              "failure_reason"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reason": {
+            "const": "scan_failing"
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "then": {
+        "properties": {
+          "object_type": {
+            "const": "scan"
+          },
+          "details": {
+            "required": [
+              "consecutive_failures"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reason": {
+            "const": "proposal_ready"
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "then": {
+        "properties": {
+          "details": {
+            "properties": {
+              "failure_reason": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reason": {
+            "const": "draft_failed"
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "then": {
+        "properties": {
+          "details": {
+            "properties": {
+              "failure_reason": {
+                "$ref": "../defs.json#/$defs/failed_reason"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

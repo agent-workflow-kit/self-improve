@@ -1,0 +1,509 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/cli/show.json",
+  "title": "show output",
+  "description": "The Proposal object; diff is present only with --diff.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "$ref": "../defs.json#/$defs/proposal_id"
+    },
+    "state": {
+      "$ref": "../defs.json#/$defs/state"
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "$ref": "../defs.json#/$defs/reason"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "retro_id": {
+      "$ref": "../defs.json#/$defs/retro_id"
+    },
+    "retro_key": {
+      "$ref": "../defs.json#/$defs/sha256"
+    },
+    "candidate_id": {
+      "$ref": "../defs.json#/$defs/candidate_id"
+    },
+    "candidate": {
+      "$ref": "../defs.json#/$defs/candidate_snapshot"
+    },
+    "target": {
+      "anyOf": [
+        {
+          "$ref": "../defs.json#/$defs/target"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "source": {
+      "anyOf": [
+        {
+          "$ref": "../defs.json#/$defs/source"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000
+    },
+    "revisions": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000,
+      "description": "A count of revisions drafted."
+    },
+    "outcome": {
+      "anyOf": [
+        {
+          "$ref": "../defs.json#/$defs/outcome"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "rationale": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000,
+          "x-untrusted": true,
+          "description": "Model text."
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "replacements": {
+      "type": "array",
+      "items": {
+        "$ref": "../defs.json#/$defs/replacement"
+      },
+      "maxItems": 100
+    },
+    "changed_lines": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "changed_ratio": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "plan_sha256": {
+      "anyOf": [
+        {
+          "$ref": "../defs.json#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "post_sha256": {
+      "anyOf": [
+        {
+          "$ref": "../defs.json#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "labels": {
+      "$ref": "../defs.json#/$defs/labels"
+    },
+    "csession_id": {
+      "anyOf": [
+        {
+          "$ref": "../defs.json#/$defs/csession_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "cost_usd": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "num_turns": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "$ref": "../defs.json#/$defs/warning"
+      },
+      "maxItems": 16,
+      "uniqueItems": true
+    },
+    "created_at": {
+      "$ref": "../defs.json#/$defs/timestamp"
+    },
+    "updated_at": {
+      "$ref": "../defs.json#/$defs/timestamp"
+    },
+    "drafted_at": {
+      "anyOf": [
+        {
+          "$ref": "../defs.json#/$defs/timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "applied_at": {
+      "anyOf": [
+        {
+          "$ref": "../defs.json#/$defs/timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "undone_at": {
+      "anyOf": [
+        {
+          "$ref": "../defs.json#/$defs/timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "finished_at": {
+      "anyOf": [
+        {
+          "$ref": "../defs.json#/$defs/timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "diff": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 4194304,
+      "x-untrusted": true,
+      "description": "Rendered unified diff (ASCII-escaped); only with --diff."
+    }
+  },
+  "required": [
+    "id",
+    "state",
+    "reason",
+    "retro_id",
+    "retro_key",
+    "candidate_id",
+    "candidate",
+    "target",
+    "source",
+    "revision",
+    "revisions",
+    "outcome",
+    "rationale",
+    "replacements",
+    "changed_lines",
+    "changed_ratio",
+    "plan_sha256",
+    "post_sha256",
+    "labels",
+    "csession_id",
+    "cost_usd",
+    "num_turns",
+    "warnings",
+    "created_at",
+    "updated_at",
+    "drafted_at",
+    "applied_at",
+    "undone_at",
+    "finished_at"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "unresolved"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "target": {
+            "type": "null"
+          },
+          "outcome": {
+            "type": "null"
+          },
+          "replacements": {
+            "maxItems": 0
+          },
+          "csession_id": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "ready"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "const": "edit"
+          },
+          "reason": {
+            "type": "null"
+          },
+          "replacements": {
+            "minItems": 1
+          },
+          "target": {
+            "$ref": "../defs.json#/$defs/target"
+          },
+          "plan_sha256": {
+            "$ref": "../defs.json#/$defs/sha256"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "plan_sha256": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "no_change"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "const": "no_change"
+          },
+          "replacements": {
+            "maxItems": 0
+          },
+          "rationale": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "failed"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason": {
+            "$ref": "../defs.json#/$defs/failed_reason"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "refused"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason": {
+            "$ref": "../defs.json#/$defs/refused_reason"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "rejected"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason": {
+            "$ref": "../defs.json#/$defs/rejected_reason"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "enum": [
+              "drafting",
+              "no_change",
+              "unresolved",
+              "stale",
+              "applied",
+              "undone"
+            ]
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "applied"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "applied_at": {
+            "$ref": "../defs.json#/$defs/timestamp"
+          },
+          "post_sha256": {
+            "$ref": "../defs.json#/$defs/sha256"
+          },
+          "target": {
+            "$ref": "../defs.json#/$defs/target"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "undone"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "undone_at": {
+            "$ref": "../defs.json#/$defs/timestamp"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "drafting"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "finished_at": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
+}

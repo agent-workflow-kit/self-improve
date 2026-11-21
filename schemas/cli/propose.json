@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/cli/propose.json",
+  "title": "propose output",
+  "description": "Exit 0 when every selected candidate produced a stored proposal; the failing candidate's code otherwise, with the successful ones still listed on stdout.",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "proposals": {
+          "type": "array",
+          "items": {
+            "$ref": "../defs.json#/$defs/proposal"
+          },
+          "maxItems": 20
+        },
+        "skipped": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "candidate": {
+                "$ref": "../defs.json#/$defs/candidate_id"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64,
+                "pattern": "^[a-z][a-z0-9_]{0,63}(?![\\s\\S])"
+              }
+            },
+            "required": [
+              "candidate",
+              "reason"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "proposals",
+        "skipped"
+      ],
+      "additionalProperties": false,
+      "description": "Result: stored proposals (any state) and skipped candidates."
+    },
+    {
+      "type": "object",
+      "properties": {
+        "dry_run": {
+          "const": true
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "candidate_id": {
+                "$ref": "../defs.json#/$defs/candidate_id"
+              },
+              "target_path": {
+                "anyOf": [
+                  {
+                    "$ref": "../defs.json#/$defs/path"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "tier": {
+                "anyOf": [
+                  {
+                    "$ref": "../defs.json#/$defs/tier"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "action": {
+                "enum": [
+                  "draft",
+                  "unresolved",
+                  "refused",
+                  "existing"
+                ]
+              }
+            },
+            "required": [
+              "candidate_id",
+              "target_path",
+              "tier",
+              "action"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 20
+        },
+        "launch": {
+          "type": "object",
+          "properties": {
+            "skill": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "sandbox": {
+              "enum": [
+                "required",
+                "preferred",
+                "off"
+              ]
+            },
+            "tools": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "maxItems": 32
+            }
+          },
+          "required": [
+            "skill",
+            "sandbox",
+            "tools"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "dry_run",
+        "candidates",
+        "launch"
+      ],
+      "additionalProperties": false,
+      "description": "--dry-run: what would be drafted; nothing is written."
+    }
+  ]
+}

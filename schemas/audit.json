@@ -1,47 +1,159 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "self-improve/audit",
+  "$id": "self-improve/audit.json",
   "title": "self-improve audit.jsonl record",
-  "description": "Audit record for self-improve. Whether this tool writes audit records is decided in its design session (architecture §14).",
+  "description": "One record per phase for every write to a user file: attempted before the write and the outcome after it. Refusals, vetoes, escalations and declined confirmations are not audited.",
   "type": "object",
   "properties": {
     "ts": {
-      "type": "string",
-      "format": "date-time"
+      "$ref": "defs.json#/$defs/timestamp"
     },
     "actor": {
-      "type": "string"
+      "$ref": "defs.json#/$defs/actor"
+    },
+    "actor_source": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z][a-z0-9_-]{0,63}(?![\\s\\S])"
+    },
+    "stdin_tty": {
+      "type": "boolean"
     },
     "decision_id": {
-      "oneOf": [
+      "anyOf": [
         {
-          "type": "string"
+          "$ref": "defs.json#/$defs/decision_id"
         },
         {
           "type": "array",
           "items": {
-            "type": "string"
-          }
+            "$ref": "defs.json#/$defs/decision_id"
+          },
+          "maxItems": 16
         }
       ]
     },
-    "target": {
-      "type": "string"
+    "attempt_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}(?![\\s\\S])",
+      "description": "Shared by the attempted and outcome records."
     },
     "action": {
-      "type": "string"
+      "$ref": "defs.json#/$defs/action"
+    },
+    "target": {
+      "$ref": "defs.json#/$defs/path"
     },
     "inputs": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "proposal_id": {
+          "$ref": "defs.json#/$defs/proposal_id"
+        },
+        "retro_id": {
+          "$ref": "defs.json#/$defs/retro_id"
+        },
+        "candidate_id": {
+          "$ref": "defs.json#/$defs/candidate_id"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "plan_sha256": {
+          "$ref": "defs.json#/$defs/sha256"
+        },
+        "tier": {
+          "$ref": "defs.json#/$defs/plan_tier"
+        },
+        "pre_sha256": {
+          "$ref": "defs.json#/$defs/sha256"
+        },
+        "post_sha256": {
+          "$ref": "defs.json#/$defs/sha256"
+        }
+      },
+      "required": [
+        "proposal_id",
+        "retro_id",
+        "candidate_id",
+        "revision",
+        "plan_sha256",
+        "tier",
+        "pre_sha256",
+        "post_sha256"
+      ],
+      "additionalProperties": false,
+      "description": "Hashes and ids only, never text."
     },
-    "result": {}
+    "result": {
+      "$ref": "defs.json#/$defs/result"
+    }
   },
   "required": [
     "ts",
     "actor",
-    "target",
+    "actor_source",
+    "stdin_tty",
+    "attempt_id",
     "action",
+    "target",
+    "inputs",
     "result"
   ],
-  "additionalProperties": true
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "const": "accept"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "then": {
+        "properties": {
+          "result": {
+            "enum": [
+              "attempted",
+              "applied",
+              "failed",
+              "stale"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "const": "undo"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "then": {
+        "properties": {
+          "result": {
+            "enum": [
+              "attempted",
+              "undone",
+              "failed",
+              "stale"
+            ]
+          }
+        }
+      }
+    }
+  ]
 }

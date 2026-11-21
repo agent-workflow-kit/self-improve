@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/cli/undo.json",
+  "title": "undo output",
+  "description": "Printed on exit 0. A failure is the error envelope.",
+  "type": "object",
+  "properties": {
+    "action": {
+      "const": "undo"
+    },
+    "result": {
+      "const": "undone"
+    },
+    "proposal": {
+      "$ref": "../defs.json#/$defs/proposal"
+    },
+    "plan_sha256": {
+      "$ref": "../defs.json#/$defs/sha256"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "$ref": "../defs.json#/$defs/warning"
+      },
+      "maxItems": 16,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "action",
+    "result",
+    "proposal",
+    "plan_sha256",
+    "warnings"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/cli/resolve.json",
+  "title": "resolve output",
+  "description": "The Proposal object after resolve.",
+  "$ref": "../defs.json#/$defs/proposal"
+}

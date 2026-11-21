@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/cli/list.json",
+  "title": "list output",
+  "description": "Newest first. Reads the store only; rows carry no model text.",
+  "type": "object",
+  "properties": {
+    "proposals": {
+      "type": "array",
+      "items": {
+        "$ref": "../defs.json#/$defs/row"
+      },
+      "maxItems": 1000
+    },
+    "truncated": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "proposals",
+    "truncated"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/hooks/post-accept.json",
+  "title": "post-accept hook payload",
+  "description": "Stdin JSON after the outcome record, for accept and undo, success or failure. Cannot undo; best effort, at most once.",
+  "type": "object",
+  "properties": {
+    "tool": {
+      "const": "self-improve"
+    },
+    "hook": {
+      "const": "post-accept"
+    },
+    "object_type": {
+      "const": "proposal"
+    },
+    "object_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}(?![\\s\\S])"
+    },
+    "event_id": {
+      "$ref": "../defs.json#/$defs/event_id"
+    },
+    "labels": {
+      "$ref": "../defs.json#/$defs/labels"
+    },
+    "reads_third_party": {
+      "const": false
+    },
+    "tainted": {
+      "const": false
+    },
+    "proposal_id": {
+      "$ref": "../defs.json#/$defs/proposal_id"
+    },
+    "action": {
+      "$ref": "../defs.json#/$defs/action"
+    },
+    "result": {
+      "enum": [
+        "applied",
+        "undone",
+        "failed",
+        "stale"
+      ]
+    },
+    "pre_sha256": {
+      "$ref": "../defs.json#/$defs/sha256"
+    },
+    "post_sha256": {
+      "anyOf": [
+        {
+          "$ref": "../defs.json#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "tier": {
+      "$ref": "../defs.json#/$defs/plan_tier"
+    }
+  },
+  "required": [
+    "tool",
+    "hook",
+    "object_type",
+    "object_id",
+    "event_id",
+    "labels",
+    "reads_third_party",
+    "tainted",
+    "proposal_id",
+    "action",
+    "result",
+    "pre_sha256",
+    "post_sha256",
+    "tier"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "result": {
+            "const": "applied"
+          }
+        },
+        "required": [
+          "result"
+        ]
+      },
+      "then": {
+        "properties": {
+          "action": {
+            "const": "accept"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "result": {
+            "const": "undone"
+          }
+        },
+        "required": [
+          "result"
+        ]
+      },
+      "then": {
+        "properties": {
+          "action": {
+            "const": "undo"
+          }
+        }
+      }
+    }
+  ]
+}

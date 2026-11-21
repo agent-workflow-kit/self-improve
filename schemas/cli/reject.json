@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/cli/reject.json",
+  "title": "reject output",
+  "description": "The Proposal object after reject.",
+  "$ref": "../defs.json#/$defs/proposal"
+}

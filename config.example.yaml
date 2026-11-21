@@ -1,2 +1,57 @@
-# Example config for self-improve. Location: ~/.config/self-improve/config.yaml (drop-ins: config.d/*.yaml). Keys are defined in docs/interface.md once designed.
-hooks: {}
+# Example config for self-improve. Location: ~/.config/self-improve/config.yaml (drop-ins: config.d/*.yaml).
+# Every key is optional; the values shown are the defaults unless marked "example". See docs/interface.md (Config).
+
+me:
+  name: example-user          # example: name for human: actors when the terminal user cannot be derived
+
+draft:
+  skill: self-improve:improve   # plugin:skill of the drafting skill
+  # skill_marker: my-custom-marker   # marker for a custom skill (the bundled skill's marker file is used otherwise)
+  plugin_dirs: []               # extra plugin directories, absolute paths, at most 8
+  # model: haiku                # model for drafts (a cheap model is recommended); default: claude-session's
+  timeout: 10m                  # session timeout, 1 s to 2 h
+  max_turns: 12                 # turn bound
+  # permission_profile: /absolute/path/improve-draft.yaml   # default: the bundled improve-draft.yaml
+  sandbox: required             # required, preferred or off (lowering needs a terminal)
+  setting_sources: []           # setting sources to load
+  env_allowlist: [PATH, HOME, USER, LANG, TERM]   # names passed with --env-allowlist-only
+  tools: [Read, Write, Bash, Skill]               # passed with --tools
+
+targets: []                     # named targets
+# targets:
+#   - name: my-skill            # example entry
+#     aliases: [my-skill-alias]
+#     path: ~/skills/my-skill/SKILL.md
+#     class: skill
+#     sensitive: false
+
+refuse_paths: []                # extra refused-tier globs
+sensitive_paths: []             # extra sensitive-tier globs
+ordinary_paths: []              # extra ordinary-tier globs
+
+limits:
+  drafts_per_day: 20            # model drafts per day, reserved at row insert
+  revisions: 5                  # revisions per proposal
+  target_max_bytes: 262144      # target size cap
+  new_text_max_bytes: 65536     # sum of new text per edit
+  max_pairs: 20                 # find/replace pairs per edit
+  max_changed_ratio: 0.30       # changed-line share cap
+
+display:
+  max_lines: 2000               # diff lines before accept refuses to confirm
+
+scan:
+  enabled: false                # enables the scan command
+  max_per_run: 5                # model runs per scan call
+  risk: [high, medium]          # candidate risks scan drafts
+  classes: [skill, instructions_file, config, permission_profile, workflow]   # candidate target classes scan drafts
+
+redaction:
+  mask_env: []                  # variables whose values may never appear in new text
+
+retention:
+  proposals: 90d                # terminal proposals
+  backups: 90d                  # pre-images of applied proposals
+  scanned: 180d                 # scanned-retro records
+
+hooks: {}                       # pre-draft, pre-accept, post-accept, post-attention: lists of {cmd, timeout, async}

@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/hooks/pre-draft.json",
+  "title": "pre-draft hook payload",
+  "description": "Stdin JSON, after the proposal row and lease exist and before any model run. Exit 0 continue; 13 escalate; other non-zero, timeout or signal veto. No retro, candidate, model or file text.",
+  "type": "object",
+  "properties": {
+    "tool": {
+      "const": "self-improve"
+    },
+    "hook": {
+      "const": "pre-draft"
+    },
+    "object_type": {
+      "const": "proposal"
+    },
+    "object_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}(?![\\s\\S])"
+    },
+    "event_id": {
+      "$ref": "../defs.json#/$defs/event_id"
+    },
+    "labels": {
+      "$ref": "../defs.json#/$defs/labels"
+    },
+    "reads_third_party": {
+      "const": false
+    },
+    "tainted": {
+      "const": false
+    },
+    "retro_id": {
+      "$ref": "../defs.json#/$defs/retro_id"
+    },
+    "candidate_id": {
+      "$ref": "../defs.json#/$defs/candidate_id"
+    },
+    "target_class": {
+      "$ref": "../defs.json#/$defs/target_class"
+    },
+    "risk": {
+      "$ref": "../defs.json#/$defs/risk"
+    },
+    "tier": {
+      "$ref": "../defs.json#/$defs/plan_tier"
+    },
+    "model": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "tool",
+    "hook",
+    "object_type",
+    "object_id",
+    "event_id",
+    "labels",
+    "reads_third_party",
+    "tainted",
+    "retro_id",
+    "candidate_id",
+    "target_class",
+    "risk",
+    "tier",
+    "model"
+  ],
+  "additionalProperties": false
+}
