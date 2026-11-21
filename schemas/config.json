@@ -83,7 +83,8 @@
         "model": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 128
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/-]{0,127}(?![\\s\\S])"
         },
         "timeout": {
           "anyOf": [
@@ -190,10 +191,6 @@
           },
           "class": {
             "$ref": "#/$defs/target_class"
-          },
-          "sensitive": {
-            "type": "boolean",
-            "default": false
           }
         },
         "required": [
@@ -201,7 +198,7 @@
           "class"
         ],
         "additionalProperties": false,
-        "description": "A file or, for class skill, a directory of skills."
+        "description": "A file or, for class skill, a directory of skills. An entry never changes a tier."
       },
       "maxItems": 256,
       "default": []
@@ -306,19 +303,22 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 1000,
-          "default": 5
+          "default": 5,
+          "description": "Slots per scan call."
         },
         "max_per_day": {
           "type": "integer",
           "minimum": 1,
           "maximum": 10000,
-          "default": 10
+          "default": 10,
+          "description": "Scan slots per UTC day, counted inside limits.drafts_per_day."
         },
         "max_per_retro": {
           "type": "integer",
           "minimum": 1,
           "maximum": 100,
-          "default": 5
+          "default": 5,
+          "description": "Slots scan spends on one retro."
         },
         "risk": {
           "type": "array",
@@ -389,10 +389,6 @@
           "description": "A duration in h or d of at least 7d. A safety key: config file only, no environment variable.",
           "default": "90d"
         },
-        "scanned": {
-          "$ref": "#/$defs/duration",
-          "default": "180d"
-        },
         "open": {
           "$ref": "#/$defs/duration",
           "default": "60d"
@@ -417,15 +413,13 @@
               },
               "timeout": {
                 "$ref": "#/$defs/hook_timeout"
-              },
-              "async": {
-                "type": "boolean"
               }
             },
             "required": [
               "cmd"
             ],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "A pre-* hook cannot be async."
           },
           "maxItems": 32,
           "default": []
@@ -443,15 +437,13 @@
               },
               "timeout": {
                 "$ref": "#/$defs/hook_timeout"
-              },
-              "async": {
-                "type": "boolean"
               }
             },
             "required": [
               "cmd"
             ],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "A pre-* hook cannot be async."
           },
           "maxItems": 32,
           "default": []

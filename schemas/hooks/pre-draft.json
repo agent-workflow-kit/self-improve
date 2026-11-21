@@ -42,7 +42,7 @@
       "type": "integer",
       "minimum": 1,
       "maximum": 1000,
-      "description": "1 for a first draft; the new revision number (at least 2) for an edit."
+      "description": "The run number about to start: 1 for a first draft, at least 2 for an edit."
     },
     "target_class": {
       "$ref": "../defs.json#/$defs/target_class"

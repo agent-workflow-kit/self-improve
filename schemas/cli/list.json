@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "self-improve/cli/list.json",
   "title": "list output",
-  "description": "Newest first. Reads the store only; rows carry no model text.",
+  "description": "Sorted by created_at descending, then id. Reads the store only; rows carry no model text.",
   "type": "object",
   "properties": {
     "proposals": {
@@ -14,11 +14,20 @@
     },
     "truncated": {
       "type": "boolean"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "$ref": "../defs.json#/$defs/command_warning"
+      },
+      "maxItems": 8,
+      "uniqueItems": true
     }
   },
   "required": [
     "proposals",
-    "truncated"
+    "truncated",
+    "warnings"
   ],
   "additionalProperties": false
 }

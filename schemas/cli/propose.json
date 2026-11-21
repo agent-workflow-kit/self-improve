@@ -37,6 +37,14 @@
           },
           "maxItems": 20
         },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "$ref": "../defs.json#/$defs/command_warning"
+          },
+          "maxItems": 8,
+          "uniqueItems": true
+        },
         "error": {
           "anyOf": [
             {
@@ -51,108 +59,14 @@
       "required": [
         "proposals",
         "skipped",
+        "warnings",
         "error"
       ],
       "additionalProperties": false,
       "description": "Result: stored proposals (any state), skipped candidates and the first non-zero candidate's envelope (null when every candidate succeeded). A documented exception to the envelope-on-non-zero rule."
     },
     {
-      "type": "object",
-      "properties": {
-        "dry_run": {
-          "const": true
-        },
-        "candidates": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "candidate_id": {
-                "$ref": "../defs.json#/$defs/candidate_id"
-              },
-              "target_path": {
-                "anyOf": [
-                  {
-                    "$ref": "../defs.json#/$defs/path"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "tier": {
-                "anyOf": [
-                  {
-                    "$ref": "../defs.json#/$defs/tier"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "action": {
-                "enum": [
-                  "draft",
-                  "unresolved",
-                  "refused",
-                  "existing"
-                ]
-              }
-            },
-            "required": [
-              "candidate_id",
-              "target_path",
-              "tier",
-              "action"
-            ],
-            "additionalProperties": false
-          },
-          "maxItems": 20
-        },
-        "launch": {
-          "type": "object",
-          "properties": {
-            "skill": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 128
-            },
-            "mode": {
-              "const": "headless"
-            },
-            "sandbox": {
-              "enum": [
-                "required",
-                "preferred",
-                "off"
-              ]
-            },
-            "tools": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 64
-              },
-              "maxItems": 32
-            }
-          },
-          "required": [
-            "skill",
-            "mode",
-            "sandbox",
-            "tools"
-          ],
-          "additionalProperties": false
-        }
-      },
-      "required": [
-        "dry_run",
-        "candidates",
-        "launch"
-      ],
-      "additionalProperties": false,
-      "description": "--dry-run: what would be drafted; nothing is written."
+      "$ref": "../defs.json#/$defs/dry_run_propose"
     }
   ]
 }

@@ -86,6 +86,10 @@
     },
     "result": {
       "$ref": "defs.json#/$defs/result"
+    },
+    "recovered": {
+      "type": "boolean",
+      "description": "True on an outcome record written by recovery."
     }
   },
   "required": [

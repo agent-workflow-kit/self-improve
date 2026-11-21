@@ -20,7 +20,7 @@
     "warnings": {
       "type": "array",
       "items": {
-        "$ref": "../defs.json#/$defs/warning"
+        "$ref": "../defs.json#/$defs/output_warning"
       },
       "maxItems": 16,
       "uniqueItems": true

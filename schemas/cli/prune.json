@@ -30,10 +30,6 @@
         "temp_files": {
           "type": "integer",
           "minimum": 0
-        },
-        "scanned_retros": {
-          "type": "integer",
-          "minimum": 0
         }
       },
       "required": [
@@ -41,8 +37,7 @@
         "backups",
         "session_artifacts",
         "sessions",
-        "temp_files",
-        "scanned_retros"
+        "temp_files"
       ],
       "additionalProperties": false
     },
@@ -72,10 +67,15 @@
             ]
           },
           "result": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 64,
-            "pattern": "^[a-z][a-z0-9_]{0,63}(?![\\s\\S])"
+            "enum": [
+              "applied",
+              "undone",
+              "failed",
+              "stale",
+              "ready",
+              "no_change",
+              "runner_lost"
+            ]
           }
         },
         "required": [

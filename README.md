@@ -14,9 +14,9 @@ L3 (workflow). Works standalone at a terminal; it never calls the harness (`awki
 
 - `propose RETRO_ID` drafts one proposal per retro candidate: an exact find/replace edit to one target file you named (or your config named), or `no_change` with a reason.
 - `show` prints the review view with the tool-computed diff; `edit` revises a draft with your instruction; `accept` applies it after a confirmation on your terminal; `undo` restores the pre-image; `reject` closes it.
-- Targets are tiered by path and execute bit: ordinary (skills, `CLAUDE.md`), sensitive (settings files, permission profiles, tool configs, hook scripts; needs `--allow-sensitive`) and refused (credentials, the tool's own state). A `targets` entry in your config can raise a tier, never lower it. Files that contain secrets are never staged to the model.
+- Targets are tiered by path and execute bit: ordinary (skills, `CLAUDE.md`), sensitive (settings files, permission profiles, tool configs, hook scripts; needs `--allow-sensitive`) and refused (credentials, the tool's own state). A `targets` entry in your config never changes a tier. Files that contain secrets are never staged to the model.
 - Nothing is applied automatically. Every write to a file is audited, and every edit keeps a pre-image copy.
-- Optional `scan` (off by default) drafts for new retros from cron; it never accepts anything.
+- Optional `scan` (off by default) drafts for new retros from cron, only for ordinary-tier targets and only with the sandbox required; it never accepts anything.
 
 ## Commands
 
@@ -50,11 +50,11 @@ Pre-register your usual targets in `~/.config/self-improve/config.yaml` (`target
 
 ## Exit codes
 
-0 success; 2 usage or invalid config; 10 not found or already in that state; 11 hook veto; 12 failed or unavailable; 13 needs a human; 14 to 18 the drafting session's outcome; 20 refused; 21 ambiguous id; 22 nothing to do. The condition table with every reason is in [`docs/interface.md`](docs/interface.md) (Exit codes and Refusal reasons).
+See [Exit codes](docs/interface.md#exit-codes) and [Refusal reasons](docs/interface.md#refusal-reasons) in the interface.
 
 ## Environment variables
 
-Only non-safety keys have overrides: `SELF_IMPROVE_DRAFT_TIMEOUT`, `SELF_IMPROVE_DRAFT_MODEL`, `SELF_IMPROVE_LIMITS_DRAFTS_PER_DAY` and `SELF_IMPROVE_RETENTION_PROPOSALS`. Config and state are read from the home in the password database; `XDG_*` variables do not move them. The adopting `claude-session exec` needs the variables named by `required_env_names` (cron lines source your env file). See [`docs/interface.md`](docs/interface.md) (Environment variables).
+See [Environment variables](docs/interface.md#environment-variables) and [Config](docs/interface.md#config) in the interface.
 
 ## Documentation
 

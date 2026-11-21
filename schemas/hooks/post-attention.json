@@ -157,6 +157,9 @@
           "object_id": {
             "$ref": "../defs.json#/$defs/scan_run_id"
           },
+          "labels": {
+            "maxItems": 0
+          },
           "details": {
             "required": [
               "consecutive_failures"

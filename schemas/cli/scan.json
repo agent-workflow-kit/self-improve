@@ -5,37 +5,48 @@
   "description": "Printed on exit 0. A disabled scan or nothing new is exit 22 with the error envelope; a failed hard dependency is exit 12.",
   "type": "object",
   "properties": {
+    "dry_run": {
+      "const": true
+    },
     "retros": {
       "type": "integer",
-      "minimum": 0
+      "minimum": 0,
+      "description": "Retros read with retro show."
     },
     "drafted": {
       "type": "integer",
-      "minimum": 0
+      "minimum": 0,
+      "description": "Slots reserved."
     },
     "unresolved": {
       "type": "integer",
-      "minimum": 0
+      "minimum": 0,
+      "description": "Unresolved rows created."
     },
     "failed": {
       "type": "integer",
-      "minimum": 0
+      "minimum": 0,
+      "description": "Drafts of this call that ended failed."
     },
     "skipped": {
       "type": "integer",
-      "minimum": 0
+      "minimum": 0,
+      "description": "Candidates that already had a proposal."
     },
     "filtered": {
       "type": "integer",
-      "minimum": 0
+      "minimum": 0,
+      "description": "Candidates filtered by risk, class or tier."
     },
     "capped": {
       "type": "integer",
-      "minimum": 0
+      "minimum": 0,
+      "description": "Candidates held back by the per-retro cap."
     },
     "deferred": {
       "type": "integer",
-      "minimum": 0
+      "minimum": 0,
+      "description": "Listed retros left incomplete."
     },
     "proposals": {
       "type": "array",
@@ -51,10 +62,11 @@
           "already_running",
           "retro_list_truncated",
           "recovery_busy",
-          "recovery_pending"
+          "recovery_pending",
+          "scan_wedged"
         ]
       },
-      "maxItems": 4,
+      "maxItems": 5,
       "uniqueItems": true
     }
   },

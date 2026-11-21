@@ -31,7 +31,8 @@ Exactly one file, `artifacts/proposal.json` in your session directory, matching 
 - `old` and `new` must differ, pairs must not overlap and no `old` may repeat.
 - Keep edits minimal: change only what the candidate asks for, preserve the file's style and format (a JSON, YAML or TOML file must still parse), and keep `new` text well under the limits in `request.json`.
 - Never put secrets, credentials or paths under `~/.ssh` in `new`.
-- For a markdown target, do not change frontmatter keys other than `name`, `description` and `argument-hint`; do not add `!` command lines or `@` imports.
+- For a markdown target, do not change frontmatter other than one-line `description` and `argument-hint` values, never add or change a `---` line, and do not add `!` command lines or `@` imports.
+- Keep the changed lines within the `max_changed_lines` limit in `request.json`.
 - Never name or choose a target path. The target is the staged file.
 - Prefer `no_change` with a short rationale when the candidate is vague, oversized, already satisfied by the target, or would need more than the limits allow.
 
@@ -39,7 +40,7 @@ Exactly one file, `artifacts/proposal.json` in your session directory, matching 
 
 Write only `artifacts/proposal.json` and your summary file. Write nowhere else. In a revision, write a new `artifacts/proposal.json` for the run named in the prompt file.
 
-This report command is this skill's own instruction (claude-session adds the standard report instructions; the wrapper adds none). File the report with literal absolute paths. A command containing `$CSESSION_DIR` or `cd ... &&` is denied in the sandbox, so write out the full path of your summary file:
+This report command is this skill's own instruction (claude-session adds the standard report instructions; the wrapper adds none). File the report with literal absolute paths. A command containing `$CSESSION_DIR` or `cd ... &&` is denied in the sandbox, so write out the absolute summary path given in the prompt file:
 
 ```text
 claude-session report done --summary-file /absolute/path/to/summary.md --artifact proposal.json
