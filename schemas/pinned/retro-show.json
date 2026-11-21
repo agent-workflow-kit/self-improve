@@ -1,0 +1,446 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/pinned/retro-show.json",
+  "title": "retro show output",
+  "description": "PINNED tolerant copy of session-audit's retro-show output; extra fields are ignored. The Retro object, including the artifact fields; digest is present only with --digest (null when pruned) and is untrusted fenced text.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "$ref": "session-audit-defs.json#/$defs/retro_id"
+    },
+    "state": {
+      "$ref": "session-audit-defs.json#/$defs/retro_state"
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "$ref": "session-audit-defs.json#/$defs/retro_reason"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "key": {
+      "$ref": "session-audit-defs.json#/$defs/sha256"
+    },
+    "scope": {
+      "$ref": "session-audit-defs.json#/$defs/scope"
+    },
+    "scope_resolved": {
+      "type": "object",
+      "properties": {
+        "since": {
+          "anyOf": [
+            {
+              "$ref": "session-audit-defs.json#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "until": {
+          "anyOf": [
+            {
+              "$ref": "session-audit-defs.json#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "since",
+        "until"
+      ],
+      "additionalProperties": true
+    },
+    "coverage": {
+      "$ref": "session-audit-defs.json#/$defs/coverage"
+    },
+    "skipped": {
+      "type": "array",
+      "items": {
+        "$ref": "session-audit-defs.json#/$defs/skipped"
+      },
+      "maxItems": 1000
+    },
+    "sessions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ref": {
+            "$ref": "session-audit-defs.json#/$defs/ref"
+          },
+          "session_id": {
+            "$ref": "session-audit-defs.json#/$defs/session_id"
+          },
+          "csession_id": {
+            "anyOf": [
+              {
+                "$ref": "session-audit-defs.json#/$defs/csession_id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "ref",
+          "session_id",
+          "csession_id"
+        ],
+        "additionalProperties": true
+      },
+      "maxItems": 500,
+      "description": "The kept sessions, for mapping evidence refs to sessions."
+    },
+    "skill": {
+      "$ref": "session-audit-defs.json#/$defs/skill"
+    },
+    "model": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "created_at": {
+      "$ref": "session-audit-defs.json#/$defs/timestamp"
+    },
+    "updated_at": {
+      "$ref": "session-audit-defs.json#/$defs/timestamp"
+    },
+    "finished_at": {
+      "anyOf": [
+        {
+          "$ref": "session-audit-defs.json#/$defs/timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "csession_id": {
+      "anyOf": [
+        {
+          "$ref": "session-audit-defs.json#/$defs/csession_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "cost_usd": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "num_turns": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "outcome": {
+      "anyOf": [
+        {
+          "$ref": "session-audit-defs.json#/$defs/token"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "sandbox_active": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "cleanup": {
+      "anyOf": [
+        {
+          "enum": [
+            "pending",
+            "done",
+            "incomplete",
+            "skipped"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "transcripts_kept",
+          "recovery_skipped",
+          "ingest_busy"
+        ]
+      },
+      "maxItems": 8,
+      "uniqueItems": true
+    },
+    "redacted": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "again_of": {
+      "anyOf": [
+        {
+          "$ref": "session-audit-defs.json#/$defs/retro_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "counts": {
+      "$ref": "session-audit-defs.json#/$defs/retro_counts"
+    },
+    "metrics": {
+      "$ref": "session-audit-defs.json#/$defs/retro_metrics"
+    },
+    "dropped": {
+      "type": "object",
+      "properties": {
+        "findings": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "candidates": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "findings",
+        "candidates"
+      ],
+      "additionalProperties": true
+    },
+    "summary": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000,
+          "x-untrusted": true
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "$ref": "session-audit-defs.json#/$defs/finding"
+      },
+      "maxItems": 50
+    },
+    "candidates": {
+      "type": "array",
+      "items": {
+        "$ref": "session-audit-defs.json#/$defs/stored_candidate"
+      },
+      "maxItems": 20
+    },
+    "digest": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1048576,
+          "x-untrusted": true
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "id",
+    "state",
+    "reason",
+    "key",
+    "scope",
+    "scope_resolved",
+    "coverage",
+    "skipped",
+    "sessions",
+    "skill",
+    "model",
+    "created_at",
+    "updated_at",
+    "finished_at",
+    "csession_id",
+    "cost_usd",
+    "num_turns",
+    "outcome",
+    "sandbox_active",
+    "cleanup",
+    "warnings",
+    "redacted",
+    "again_of",
+    "counts",
+    "metrics",
+    "dropped",
+    "summary",
+    "findings",
+    "candidates"
+  ],
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "enum": [
+              "digesting",
+              "running",
+              "validating"
+            ]
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "done"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason": {
+            "type": "null"
+          },
+          "summary": {
+            "not": {
+              "type": "null"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "failed"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason": {
+            "enum": [
+              "runner_lost",
+              "session_not_started",
+              "claude_session_error",
+              "session_failed",
+              "no_artifact",
+              "artifact_invalid",
+              "identity_mismatch",
+              "marker_mismatch",
+              "no_valid_findings"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "escalated"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason": {
+            "enum": [
+              "hook_escalated",
+              "session_blocked",
+              "session_needs_input"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "canceled"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason": {
+            "enum": [
+              "interrupted",
+              "hook_vetoed"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

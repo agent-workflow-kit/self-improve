@@ -17,7 +17,7 @@ It is post-v1: not part of the v1 scope.
 ## Rules
 
 - This repo is public and open source. Never add confidential information: no company names, hostnames, ticket project keys, people's names, or private skill/plugin names. Organization-specific values belong in the user's config.
-- Never import sibling repos. Read their docs and schemas by path only. Copying a sibling's schema files into `tests/` pinned to a version is allowed.
+- Never import sibling repos. Read their docs and schemas by path only. Copying a sibling's schema files into `tests/` or `schemas/pinned/`, pinned to a version, is allowed.
 - No upward awareness: this tool never knows about, or behaves differently for, tools that call it. Behavior may differ only by explicit arguments.
 - Interface first: write `docs/interface.md` and `schemas/` before implementation.
 - Semver. A breaking interface change is, before 1.0, a `feat` commit whose title names the break (never `!` before 1.0), and from 1.0 on a `!` commit; the title becomes the changelog line (details go in the PR body). Either way, update `awkit-docs/interface-registry.md`. Never hand-edit CHANGELOG.md or the version.
@@ -29,9 +29,9 @@ It is post-v1: not part of the v1 scope.
 
 ## Workflow
 
-1. Start with a design session that resolves the open topics in `docs/design.md` and records decisions there.
-2. Write `docs/interface.md` and `schemas/`.
-3. Implement test-first.
+1. The design is done: `docs/interface.md` is the single normative source, `docs/design.md` holds the decisions and the staged plan is in the GitHub issues.
+2. Implement test-first from the GitHub issues (each is expanded into small steps when picked up); `schemas/` and `docs/interface.md` change together.
+3. Keep the edit applier, the review rendering and the target checks free of `git apply`, `patch` and any shell on model output.
 
 ## Repository workflow
 

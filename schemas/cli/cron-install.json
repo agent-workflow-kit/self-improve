@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/cli/cron-install.json",
+  "title": "cron install --dry-run output",
+  "description": "block is the managed block text. A block without a valid end line is exit 20 cron_block_malformed.",
+  "type": "object",
+  "properties": {
+    "action": {
+      "enum": [
+        "installed",
+        "replaced",
+        "unchanged"
+      ]
+    },
+    "block": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 65536,
+      "pattern": "^# self-improve managed\\n([^\\n]*\\n)*# self-improve managed end\\n?(?![\\s\\S])"
+    }
+  },
+  "required": [
+    "action",
+    "block"
+  ],
+  "additionalProperties": false
+}

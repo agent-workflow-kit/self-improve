@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/cli/edit.json",
+  "title": "edit output",
+  "description": "The Proposal object after the revision, or with --dry-run the propose dry-run object. Command warnings join the object's warnings.",
+  "oneOf": [
+    {
+      "$ref": "../defs.json#/$defs/proposal"
+    },
+    {
+      "$ref": "../defs.json#/$defs/dry_run_propose"
+    }
+  ]
+}

@@ -1,0 +1,2131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/defs.json",
+  "title": "self-improve shared definitions",
+  "description": "Shared $defs referenced by the other schemas (config.json is self-contained). Fields marked x-untrusted carry retro, model or file text.",
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "maxLength": 40,
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z(?![\\s\\S])",
+      "description": "UTC, Z suffix."
+    },
+    "sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}(?![\\s\\S])",
+      "description": "Lowercase hex SHA-256."
+    },
+    "proposal_id": {
+      "type": "string",
+      "minLength": 11,
+      "maxLength": 11,
+      "pattern": "^sp-[a-z2-7]{8}(?![\\s\\S])",
+      "description": "sp- plus 8 lowercase base32 characters (a prefix of at least 4 is accepted on input only)."
+    },
+    "retro_id": {
+      "type": "string",
+      "minLength": 11,
+      "maxLength": 11,
+      "pattern": "^ra-[a-z2-7]{8}(?![\\s\\S])",
+      "description": "A session-audit retro id."
+    },
+    "candidate_id": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 3,
+      "pattern": "^c([1-9]|1[0-9]|20)(?![\\s\\S])",
+      "description": "c1 to c20, unique only inside its retro."
+    },
+    "finding_id": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 3,
+      "pattern": "^f([1-9]|[1-4][0-9]|50)(?![\\s\\S])"
+    },
+    "session_ref": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 4,
+      "pattern": "^s([1-9][0-9]{0,1}|[1-4][0-9]{2}|500)(?![\\s\\S])"
+    },
+    "csession_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^cs-[a-z2-7]{8}(?![\\s\\S])",
+      "description": "A claude-session session id."
+    },
+    "actor": {
+      "type": "string",
+      "maxLength": 70,
+      "pattern": "^(human|auto):[A-Za-z0-9._@/-]{1,64}(?![\\s\\S])",
+      "description": "human:<user> or auto:<name>. Advisory."
+    },
+    "label_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z0-9][a-z0-9_.-]{0,63}(?![\\s\\S])",
+      "description": "claude-session's label key grammar."
+    },
+    "label_value": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9._:/#@+=,-]{0,256}(?![\\s\\S])"
+    },
+    "label": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 321,
+      "pattern": "^[a-z0-9][a-z0-9_.-]{0,63}=[A-Za-z0-9._:/#@+=,-]{0,256}(?![\\s\\S])",
+      "description": "One k=v label (guide section 9 multiset form; notice-route reads it)."
+    },
+    "labels": {
+      "type": "array",
+      "items": {
+        "$ref": "defs.json#/$defs/label"
+      },
+      "maxItems": 64,
+      "uniqueItems": true,
+      "description": "An array of k=v strings, never an object."
+    },
+    "revision_error": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "$ref": "defs.json#/$defs/failed_reason"
+        },
+        "run": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 1000
+        },
+        "at": {
+          "$ref": "defs.json#/$defs/timestamp"
+        }
+      },
+      "required": [
+        "reason",
+        "run",
+        "at"
+      ],
+      "additionalProperties": false,
+      "description": "The last failed edit run; the proposal itself is unchanged by it."
+    },
+    "decision_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9._:/@-]{1,128}(?![\\s\\S])"
+    },
+    "event_id": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 128,
+      "pattern": "^ev-[a-z2-7]{26}(?![\\s\\S])"
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "^/[^\\x00]{0,4095}(?![\\s\\S])",
+      "description": "An absolute path."
+    },
+    "target_class": {
+      "enum": [
+        "skill",
+        "instructions_file",
+        "config",
+        "permission_profile",
+        "workflow"
+      ]
+    },
+    "risk": {
+      "enum": [
+        "high",
+        "medium"
+      ]
+    },
+    "state": {
+      "enum": [
+        "drafting",
+        "ready",
+        "no_change",
+        "unresolved",
+        "refused",
+        "failed",
+        "stale",
+        "applied",
+        "rejected",
+        "undone"
+      ]
+    },
+    "tier": {
+      "enum": [
+        "ordinary",
+        "sensitive",
+        "refused"
+      ]
+    },
+    "plan_tier": {
+      "enum": [
+        "ordinary",
+        "sensitive"
+      ],
+      "description": "A refused target never gets a plan."
+    },
+    "outcome": {
+      "enum": [
+        "edit",
+        "no_change"
+      ]
+    },
+    "source": {
+      "enum": [
+        "flag",
+        "config",
+        "resolve"
+      ]
+    },
+    "actor_source": {
+      "enum": [
+        "flag",
+        "tty",
+        "default"
+      ]
+    },
+    "attempt_id": {
+      "type": "string",
+      "minLength": 29,
+      "maxLength": 29,
+      "pattern": "^at-[a-z2-7]{26}(?![\\s\\S])",
+      "description": "at- plus 26 lowercase base32 characters."
+    },
+    "scan_run_id": {
+      "type": "string",
+      "minLength": 11,
+      "maxLength": 11,
+      "pattern": "^sr-[a-z2-7]{8}(?![\\s\\S])",
+      "description": "sr- plus 8 lowercase base32."
+    },
+    "invalid_edit_rule": {
+      "enum": [
+        "old_not_unique",
+        "old_not_found",
+        "old_equals_new",
+        "overlap",
+        "too_many_pairs",
+        "refused_char",
+        "line_ending",
+        "final_newline",
+        "too_large",
+        "ratio",
+        "diff_too_long",
+        "parse",
+        "contains_secret",
+        "frontmatter_key",
+        "exec_or_import_line",
+        "post_mismatch"
+      ]
+    },
+    "action": {
+      "enum": [
+        "accept",
+        "undo"
+      ]
+    },
+    "result": {
+      "enum": [
+        "attempted",
+        "applied",
+        "undone",
+        "failed",
+        "stale"
+      ]
+    },
+    "failed_reason": {
+      "enum": [
+        "session_not_started",
+        "claude_session_error",
+        "no_artifact",
+        "artifact_invalid",
+        "identity_mismatch",
+        "marker_mismatch",
+        "invalid_edit",
+        "session_blocked",
+        "session_needs_input",
+        "session_unreported",
+        "session_killed",
+        "session_timeout",
+        "session_lost",
+        "session_failed",
+        "runner_lost",
+        "hook_escalated",
+        "hook_vetoed",
+        "interrupted",
+        "write_failed"
+      ]
+    },
+    "refused_reason": {
+      "enum": [
+        "refused_target",
+        "plugin_cache"
+      ]
+    },
+    "rejected_reason": {
+      "enum": [
+        "user",
+        "superseded",
+        "expired"
+      ]
+    },
+    "reason": {
+      "enum": [
+        "session_not_started",
+        "claude_session_error",
+        "no_artifact",
+        "artifact_invalid",
+        "identity_mismatch",
+        "marker_mismatch",
+        "invalid_edit",
+        "session_blocked",
+        "session_needs_input",
+        "session_unreported",
+        "session_killed",
+        "session_timeout",
+        "session_lost",
+        "session_failed",
+        "runner_lost",
+        "hook_escalated",
+        "hook_vetoed",
+        "interrupted",
+        "write_failed",
+        "refused_target",
+        "plugin_cache",
+        "user",
+        "superseded",
+        "expired"
+      ],
+      "description": "Closed reason of a failed, refused or rejected proposal."
+    },
+    "exit12_reason": {
+      "enum": [
+        "session_not_started",
+        "claude_session_error",
+        "no_artifact",
+        "artifact_invalid",
+        "identity_mismatch",
+        "marker_mismatch",
+        "invalid_edit",
+        "runner_lost",
+        "write_failed",
+        "claude_session_missing",
+        "claude_session_too_old",
+        "session_audit_missing",
+        "session_audit_too_old",
+        "store_unwritable",
+        "skill_not_found",
+        "unsafe_plugin_dir",
+        "launch_settings_mismatch",
+        "session_audit_error",
+        "crontab_unavailable",
+        "sandbox_lowered"
+      ]
+    },
+    "refusal_reason": {
+      "enum": [
+        "refused_target",
+        "plugin_cache",
+        "not_ready",
+        "stale",
+        "plan_mismatch",
+        "sensitive_not_allowed",
+        "actor_not_human",
+        "target_changed",
+        "backup_expired",
+        "session_gone",
+        "too_large",
+        "daily_limit",
+        "already_running",
+        "config_unsafe",
+        "store_newer",
+        "cron_block_malformed",
+        "retro_not_done",
+        "declined",
+        "revision_limit",
+        "backup_corrupt",
+        "state_unsafe"
+      ]
+    },
+    "warning": {
+      "enum": [
+        "changed_share_above_half_cap",
+        "trust_key_changed",
+        "retro_redacted",
+        "weaker_apply_guarantee",
+        "last_revision_failed",
+        "context_truncated",
+        "context_skipped"
+      ]
+    },
+    "command_warning": {
+      "enum": [
+        "recovery_pending",
+        "recovery_busy",
+        "context_skipped",
+        "config_unsafe"
+      ]
+    },
+    "output_warning": {
+      "enum": [
+        "changed_share_above_half_cap",
+        "trust_key_changed",
+        "retro_redacted",
+        "weaker_apply_guarantee",
+        "last_revision_failed",
+        "context_truncated",
+        "context_skipped",
+        "recovery_pending",
+        "recovery_busy",
+        "config_unsafe"
+      ],
+      "description": "A proposal warning or a command-level warning."
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "proposal_id": {
+          "$ref": "defs.json#/$defs/proposal_id"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "target_path": {
+          "$ref": "defs.json#/$defs/path"
+        },
+        "pairs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "added_lines": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "removed_lines": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "changed_ratio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "diff_lines": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "new_text_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "risk": {
+          "$ref": "defs.json#/$defs/risk"
+        }
+      },
+      "required": [
+        "proposal_id",
+        "revision",
+        "target_path",
+        "pairs",
+        "added_lines",
+        "removed_lines",
+        "changed_ratio",
+        "diff_lines",
+        "new_text_bytes",
+        "risk"
+      ],
+      "additionalProperties": false,
+      "description": "Numbers and a path from the user's own config or flag; no model, retro or file text."
+    },
+    "replacement": {
+      "type": "object",
+      "properties": {
+        "old": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536,
+          "x-untrusted": true
+        },
+        "new": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 65536,
+          "x-untrusted": true
+        }
+      },
+      "required": [
+        "old",
+        "new"
+      ],
+      "additionalProperties": false,
+      "description": "One exact find/replace pair against the staged target text. old is non-empty; uniqueness and old != new are tool-enforced."
+    },
+    "candidate_snapshot": {
+      "type": "object",
+      "properties": {
+        "target_class": {
+          "$ref": "defs.json#/$defs/target_class"
+        },
+        "target_hint": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "x-untrusted": true
+        },
+        "proposal": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1500,
+          "x-untrusted": true
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "defs.json#/$defs/finding_id"
+              },
+              "title": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120,
+                    "x-untrusted": true
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "detail": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1500,
+                    "x-untrusted": true
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "detail"
+            ],
+            "additionalProperties": false,
+            "description": "A cited finding copied from retro show at row creation; a finding the retro did not have is stored with null title and detail."
+          },
+          "minItems": 1,
+          "maxItems": 50
+        },
+        "risk": {
+          "$ref": "defs.json#/$defs/risk"
+        },
+        "sessions": {
+          "type": "array",
+          "items": {
+            "$ref": "defs.json#/$defs/session_ref"
+          },
+          "maxItems": 500,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "target_class",
+        "target_hint",
+        "proposal",
+        "findings",
+        "risk",
+        "sessions"
+      ],
+      "additionalProperties": false,
+      "description": "The retro candidate as stored on the proposal; the text fields are untrusted, risk and sessions are tool-written."
+    },
+    "target": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "defs.json#/$defs/path"
+        },
+        "tier": {
+          "$ref": "defs.json#/$defs/tier"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "$ref": "defs.json#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967296
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "path",
+        "tier",
+        "sha256",
+        "size"
+      ],
+      "additionalProperties": false,
+      "description": "sha256 and size are null unless the target was read (a refused row whose refusal came before the read); non-null for ready, applied and undone."
+    },
+    "refusal": {
+      "type": "object",
+      "properties": {
+        "rule": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-z][a-z0-9_]{0,63}(?![\\s\\S])"
+        },
+        "plugin": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "version": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "rule",
+        "plugin",
+        "version",
+        "source"
+      ],
+      "additionalProperties": false,
+      "description": "Why a refused row was refused; plugin, version and source are null unless plugin_cache."
+    },
+    "dry_run_propose": {
+      "type": "object",
+      "properties": {
+        "dry_run": {
+          "const": true
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "candidate_id": {
+                "$ref": "defs.json#/$defs/candidate_id"
+              },
+              "target_path": {
+                "anyOf": [
+                  {
+                    "$ref": "defs.json#/$defs/path"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "tier": {
+                "anyOf": [
+                  {
+                    "$ref": "defs.json#/$defs/tier"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "action": {
+                "enum": [
+                  "draft",
+                  "unresolved",
+                  "refused",
+                  "existing"
+                ]
+              }
+            },
+            "required": [
+              "candidate_id",
+              "target_path",
+              "tier",
+              "action"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 20
+        },
+        "launch": {
+          "type": "object",
+          "properties": {
+            "skill": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "mode": {
+              "const": "headless"
+            },
+            "sandbox": {
+              "enum": [
+                "required",
+                "preferred",
+                "off"
+              ]
+            },
+            "tools": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "maxItems": 32
+            }
+          },
+          "required": [
+            "skill",
+            "mode",
+            "sandbox",
+            "tools"
+          ],
+          "additionalProperties": false
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "$ref": "defs.json#/$defs/command_warning"
+          },
+          "maxItems": 8,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "dry_run",
+        "candidates",
+        "launch"
+      ],
+      "additionalProperties": false,
+      "description": "--dry-run of propose, resolve and edit: what would be drafted; nothing is written."
+    },
+    "plan": {
+      "type": "object",
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "action": {
+          "$ref": "defs.json#/$defs/action"
+        },
+        "proposal_id": {
+          "$ref": "defs.json#/$defs/proposal_id"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "target": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "$ref": "defs.json#/$defs/path"
+            },
+            "parent": {
+              "$ref": "defs.json#/$defs/path"
+            },
+            "tier": {
+              "$ref": "defs.json#/$defs/plan_tier"
+            },
+            "pre_sha256": {
+              "$ref": "defs.json#/$defs/sha256"
+            },
+            "size": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967296
+            }
+          },
+          "required": [
+            "path",
+            "parent",
+            "tier",
+            "pre_sha256",
+            "size"
+          ],
+          "additionalProperties": false
+        },
+        "edit_sha256": {
+          "anyOf": [
+            {
+              "$ref": "defs.json#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "post_sha256": {
+          "$ref": "defs.json#/$defs/sha256"
+        }
+      },
+      "required": [
+        "v",
+        "action",
+        "proposal_id",
+        "revision",
+        "target",
+        "edit_sha256",
+        "post_sha256"
+      ],
+      "additionalProperties": false,
+      "description": "The fields hashed into plan_sha256 (canonical JSON, see the interface). edit_sha256 is null for undo.",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "action": {
+                "const": "accept"
+              }
+            },
+            "required": [
+              "action"
+            ]
+          },
+          "then": {
+            "properties": {
+              "edit_sha256": {
+                "$ref": "defs.json#/$defs/sha256"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "edit_sha256": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "proposal": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "defs.json#/$defs/proposal_id"
+        },
+        "state": {
+          "$ref": "defs.json#/$defs/state"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "$ref": "defs.json#/$defs/reason"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retro_id": {
+          "$ref": "defs.json#/$defs/retro_id"
+        },
+        "retro_key": {
+          "$ref": "defs.json#/$defs/sha256"
+        },
+        "candidate_id": {
+          "$ref": "defs.json#/$defs/candidate_id"
+        },
+        "candidate": {
+          "$ref": "defs.json#/$defs/candidate_snapshot"
+        },
+        "target": {
+          "anyOf": [
+            {
+              "$ref": "defs.json#/$defs/target"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "refusal": {
+          "anyOf": [
+            {
+              "$ref": "defs.json#/$defs/refusal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "defs.json#/$defs/source"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000,
+          "description": "The run number that produced the stored edit."
+        },
+        "runs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000,
+          "description": "Runs started for the proposal."
+        },
+        "context_paths": {
+          "type": "array",
+          "items": {
+            "$ref": "defs.json#/$defs/path"
+          },
+          "maxItems": 4,
+          "description": "The normalized explicit context paths."
+        },
+        "last_revision_error": {
+          "anyOf": [
+            {
+              "$ref": "defs.json#/$defs/revision_error"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "outcome": {
+          "anyOf": [
+            {
+              "$ref": "defs.json#/$defs/outcome"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rationale": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000,
+              "x-untrusted": true,
+              "description": "Model text."
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "replacements": {
+          "type": "array",
+          "items": {
+            "$ref": "defs.json#/$defs/replacement"
+          },
+          "maxItems": 100
+        },
+        "changed_lines": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "changed_ratio": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "plan_sha256": {
+          "anyOf": [
+            {
+              "$ref": "defs.json#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "post_sha256": {
+          "anyOf": [
+            {
+              "$ref": "defs.json#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "labels": {
+          "$ref": "defs.json#/$defs/labels"
+        },
+        "csession_id": {
+          "anyOf": [
+            {
+              "$ref": "defs.json#/$defs/csession_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cost_usd": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "num_turns": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "$ref": "defs.json#/$defs/output_warning"
+          },
+          "maxItems": 16,
+          "uniqueItems": true
+        },
+        "created_at": {
+          "$ref": "defs.json#/$defs/timestamp"
+        },
+        "updated_at": {
+          "$ref": "defs.json#/$defs/timestamp"
+        },
+        "drafted_at": {
+          "anyOf": [
+            {
+              "$ref": "defs.json#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "applied_at": {
+          "anyOf": [
+            {
+              "$ref": "defs.json#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "undone_at": {
+          "anyOf": [
+            {
+              "$ref": "defs.json#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "finished_at": {
+          "anyOf": [
+            {
+              "$ref": "defs.json#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "diff": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4194304,
+          "x-untrusted": true,
+          "description": "Rendered unified diff (ASCII-escaped); only with show --diff."
+        }
+      },
+      "required": [
+        "id",
+        "state",
+        "reason",
+        "retro_id",
+        "retro_key",
+        "candidate_id",
+        "candidate",
+        "target",
+        "refusal",
+        "source",
+        "revision",
+        "runs",
+        "context_paths",
+        "last_revision_error",
+        "outcome",
+        "rationale",
+        "replacements",
+        "changed_lines",
+        "changed_ratio",
+        "plan_sha256",
+        "post_sha256",
+        "labels",
+        "csession_id",
+        "cost_usd",
+        "num_turns",
+        "warnings",
+        "created_at",
+        "updated_at",
+        "drafted_at",
+        "applied_at",
+        "undone_at",
+        "finished_at"
+      ],
+      "additionalProperties": false,
+      "description": "The Proposal object. Fields marked x-untrusted carry retro or model text.",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "unresolved"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "target": {
+                "type": "null"
+              },
+              "source": {
+                "type": "null"
+              },
+              "revision": {
+                "const": 0
+              },
+              "outcome": {
+                "type": "null"
+              },
+              "replacements": {
+                "maxItems": 0
+              },
+              "csession_id": {
+                "type": "null"
+              },
+              "runs": {
+                "const": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "drafting",
+                  "unresolved",
+                  "refused",
+                  "failed",
+                  "stale",
+                  "applied",
+                  "rejected",
+                  "undone"
+                ]
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "last_revision_error": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "ready"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "outcome": {
+                "const": "edit"
+              },
+              "reason": {
+                "type": "null"
+              },
+              "replacements": {
+                "minItems": 1
+              },
+              "target": {
+                "$ref": "defs.json#/$defs/target"
+              },
+              "plan_sha256": {
+                "$ref": "defs.json#/$defs/sha256"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "plan_sha256": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "ready",
+                  "applied",
+                  "undone"
+                ]
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "target": {
+                "properties": {
+                  "sha256": {
+                    "$ref": "defs.json#/$defs/sha256"
+                  },
+                  "size": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 4294967296
+                  }
+                }
+              },
+              "post_sha256": {
+                "$ref": "defs.json#/$defs/sha256"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "refused"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "refusal": {
+                "$ref": "defs.json#/$defs/refusal"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "refusal": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "refused",
+                  "rejected",
+                  "undone",
+                  "failed",
+                  "stale"
+                ]
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "finished_at": {
+                "$ref": "defs.json#/$defs/timestamp"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "finished_at": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "no_change"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "outcome": {
+                "const": "no_change"
+              },
+              "replacements": {
+                "maxItems": 0
+              },
+              "rationale": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "failed"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "reason": {
+                "$ref": "defs.json#/$defs/failed_reason"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "refused"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "reason": {
+                "$ref": "defs.json#/$defs/refused_reason"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "rejected"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "reason": {
+                "$ref": "defs.json#/$defs/rejected_reason"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "drafting",
+                  "no_change",
+                  "unresolved",
+                  "stale",
+                  "applied",
+                  "undone"
+                ]
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "reason": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "applied"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "applied_at": {
+                "$ref": "defs.json#/$defs/timestamp"
+              },
+              "post_sha256": {
+                "$ref": "defs.json#/$defs/sha256"
+              },
+              "target": {
+                "$ref": "defs.json#/$defs/target"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "undone"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "undone_at": {
+                "$ref": "defs.json#/$defs/timestamp"
+              },
+              "target": {
+                "$ref": "defs.json#/$defs/target"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "row": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "defs.json#/$defs/proposal_id"
+        },
+        "state": {
+          "$ref": "defs.json#/$defs/state"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "$ref": "defs.json#/$defs/reason"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retro_id": {
+          "$ref": "defs.json#/$defs/retro_id"
+        },
+        "candidate_id": {
+          "$ref": "defs.json#/$defs/candidate_id"
+        },
+        "target_path": {
+          "anyOf": [
+            {
+              "$ref": "defs.json#/$defs/path"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tier": {
+          "anyOf": [
+            {
+              "$ref": "defs.json#/$defs/tier"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "risk": {
+          "$ref": "defs.json#/$defs/risk"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "labels": {
+          "$ref": "defs.json#/$defs/labels"
+        },
+        "updated_at": {
+          "$ref": "defs.json#/$defs/timestamp"
+        }
+      },
+      "required": [
+        "id",
+        "state",
+        "reason",
+        "retro_id",
+        "candidate_id",
+        "target_path",
+        "tier",
+        "risk",
+        "revision",
+        "labels",
+        "updated_at"
+      ],
+      "additionalProperties": false,
+      "description": "One row of list: no model text and no session id."
+    },
+    "check": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "enum": [
+            "config",
+            "config_safety",
+            "state_dir",
+            "claude_session",
+            "session_audit",
+            "plugin",
+            "profile",
+            "skill_preflight",
+            "crontab",
+            "env_file",
+            "launch_plan",
+            "retro_list"
+          ]
+        },
+        "ok": {
+          "type": "boolean"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "pattern": "^[a-z][a-z0-9_]{0,63}(?![\\s\\S])"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "ok",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "enum": [
+            "internal",
+            "usage",
+            "config_invalid",
+            "not_found",
+            "vetoed",
+            "failed",
+            "needs_human",
+            "session_ended",
+            "refused",
+            "ambiguous",
+            "nothing_to_do"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "description": "A fixed string of the tool; never retro, model or file text."
+        },
+        "details": {
+          "type": "object",
+          "properties": {
+            "reason": {
+              "enum": [
+                "session_not_started",
+                "claude_session_error",
+                "no_artifact",
+                "artifact_invalid",
+                "identity_mismatch",
+                "marker_mismatch",
+                "invalid_edit",
+                "runner_lost",
+                "write_failed",
+                "claude_session_missing",
+                "claude_session_too_old",
+                "session_audit_missing",
+                "session_audit_too_old",
+                "store_unwritable",
+                "skill_not_found",
+                "unsafe_plugin_dir",
+                "launch_settings_mismatch",
+                "session_audit_error",
+                "crontab_unavailable",
+                "sandbox_lowered",
+                "refused_target",
+                "plugin_cache",
+                "not_ready",
+                "stale",
+                "plan_mismatch",
+                "sensitive_not_allowed",
+                "actor_not_human",
+                "target_changed",
+                "backup_expired",
+                "session_gone",
+                "too_large",
+                "daily_limit",
+                "already_running",
+                "config_unsafe",
+                "store_newer",
+                "cron_block_malformed",
+                "retro_not_done",
+                "declined",
+                "revision_limit",
+                "backup_corrupt",
+                "state_unsafe",
+                "scan_disabled",
+                "no_new_candidates",
+                "no_candidates",
+                "needs_human",
+                "hook_escalated",
+                "session_blocked",
+                "session_needs_input",
+                "mode_unsupported",
+                "config_invalid",
+                "session_unreported",
+                "session_killed",
+                "session_timeout",
+                "session_lost",
+                "session_failed",
+                "hook_vetoed",
+                "interrupted"
+              ]
+            },
+            "retryable": {
+              "type": "boolean"
+            },
+            "state": {
+              "$ref": "defs.json#/$defs/state"
+            },
+            "outcome": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "pattern": "^[a-z][a-z0-9_]{0,63}(?![\\s\\S])"
+            },
+            "proposal_id": {
+              "$ref": "defs.json#/$defs/proposal_id"
+            },
+            "retro_id": {
+              "$ref": "defs.json#/$defs/retro_id"
+            },
+            "candidate_id": {
+              "$ref": "defs.json#/$defs/candidate_id"
+            },
+            "plan_sha256": {
+              "$ref": "defs.json#/$defs/sha256"
+            },
+            "expected": {
+              "type": "array",
+              "items": {
+                "$ref": "defs.json#/$defs/state"
+              },
+              "maxItems": 10,
+              "uniqueItems": true
+            },
+            "rule": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "pattern": "^[a-z][a-z0-9_]{0,63}(?![\\s\\S])"
+            },
+            "plugin": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "version": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "end_reason": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "pattern": "^[a-z][a-z0-9_]{0,63}(?![\\s\\S])"
+            },
+            "hook": {
+              "enum": [
+                "pre-draft",
+                "pre-accept",
+                "post-accept",
+                "post-attention"
+              ]
+            },
+            "field": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 66,
+              "pattern": "^(--[a-z][a-z0-9-]{0,63}|[A-Z][A-Z0-9_]{0,63}|[a-z_][a-z0-9_.-]{0,63})(?![\\s\\S])",
+              "description": "The config key, flag or variable at fault, never its value."
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "matches": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "maxItems": 20,
+              "uniqueItems": true
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "matched": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "decision_id": {
+              "anyOf": [
+                {
+                  "$ref": "defs.json#/$defs/decision_id"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "defs.json#/$defs/decision_id"
+                  },
+                  "maxItems": 16
+                }
+              ]
+            }
+          },
+          "required": [],
+          "additionalProperties": false,
+          "description": "Closed set of ids, counts and enums; never a path of a transcript, a value or model text."
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "details"
+      ],
+      "additionalProperties": false,
+      "description": "Exit mapping: 1 internal, 2 usage or config_invalid, 10 not_found, 11 vetoed, 12 failed, 13 needs_human, 14-18 session_ended, 20 refused, 21 ambiguous, 22 nothing_to_do.",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "failed"
+              }
+            },
+            "required": [
+              "code"
+            ]
+          },
+          "then": {
+            "properties": {
+              "details": {
+                "required": [
+                  "reason",
+                  "retryable"
+                ],
+                "properties": {
+                  "reason": {
+                    "$ref": "defs.json#/$defs/exit12_reason"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "refused"
+              }
+            },
+            "required": [
+              "code"
+            ]
+          },
+          "then": {
+            "properties": {
+              "details": {
+                "required": [
+                  "reason"
+                ],
+                "properties": {
+                  "reason": {
+                    "$ref": "defs.json#/$defs/refusal_reason"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "needs_human"
+              }
+            },
+            "required": [
+              "code"
+            ]
+          },
+          "then": {
+            "properties": {
+              "details": {
+                "required": [
+                  "reason"
+                ],
+                "properties": {
+                  "reason": {
+                    "enum": [
+                      "needs_human",
+                      "hook_escalated",
+                      "session_blocked",
+                      "session_needs_input"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "nothing_to_do"
+              }
+            },
+            "required": [
+              "code"
+            ]
+          },
+          "then": {
+            "properties": {
+              "details": {
+                "required": [
+                  "reason"
+                ],
+                "properties": {
+                  "reason": {
+                    "enum": [
+                      "scan_disabled",
+                      "no_new_candidates",
+                      "no_candidates"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "vetoed"
+              }
+            },
+            "required": [
+              "code"
+            ]
+          },
+          "then": {
+            "properties": {
+              "details": {
+                "required": [
+                  "reason"
+                ],
+                "properties": {
+                  "reason": {
+                    "const": "hook_vetoed"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "details": {
+                "properties": {
+                  "reason": {
+                    "const": "invalid_edit"
+                  }
+                },
+                "required": [
+                  "reason"
+                ]
+              }
+            },
+            "required": [
+              "details"
+            ]
+          },
+          "then": {
+            "properties": {
+              "details": {
+                "required": [
+                  "rule"
+                ],
+                "properties": {
+                  "rule": {
+                    "$ref": "defs.json#/$defs/invalid_edit_rule"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "details": {
+                "properties": {
+                  "reason": {
+                    "const": "not_ready"
+                  }
+                },
+                "required": [
+                  "reason"
+                ]
+              }
+            },
+            "required": [
+              "details"
+            ]
+          },
+          "then": {
+            "properties": {
+              "details": {
+                "required": [
+                  "state",
+                  "expected"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "session_ended"
+              }
+            },
+            "required": [
+              "code"
+            ]
+          },
+          "then": {
+            "properties": {
+              "details": {
+                "required": [
+                  "outcome",
+                  "proposal_id"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "ambiguous"
+              }
+            },
+            "required": [
+              "code"
+            ]
+          },
+          "then": {
+            "properties": {
+              "details": {
+                "required": [
+                  "matches"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "hook_timeout": {
+      "anyOf": [
+        {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 600
+        },
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^(?!0+(\\.0+)?(ms|s|m)?(?![\\s\\S]))[0-9]{1,9}(\\.[0-9]+)?(ms|s|m)?(?![\\s\\S])"
+        }
+      ],
+      "description": "Default 30 seconds, at most 600 s."
+    }
+  }
+}

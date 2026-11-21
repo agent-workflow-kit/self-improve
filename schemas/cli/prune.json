@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/cli/prune.json",
+  "title": "prune output",
+  "description": "Counts per kind; with dry_run true, what would be removed.",
+  "type": "object",
+  "properties": {
+    "dry_run": {
+      "type": "boolean"
+    },
+    "removed": {
+      "type": "object",
+      "properties": {
+        "proposals": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "backups": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "session_artifacts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sessions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "temp_files": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "proposals",
+        "backups",
+        "session_artifacts",
+        "sessions",
+        "temp_files"
+      ],
+      "additionalProperties": false
+    },
+    "recoveries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "attempt_id": {
+            "anyOf": [
+              {
+                "$ref": "../defs.json#/$defs/attempt_id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "proposal_id": {
+            "$ref": "../defs.json#/$defs/proposal_id"
+          },
+          "kind": {
+            "enum": [
+              "apply",
+              "draft",
+              "edit"
+            ]
+          },
+          "result": {
+            "enum": [
+              "applied",
+              "undone",
+              "failed",
+              "stale",
+              "ready",
+              "no_change",
+              "runner_lost"
+            ]
+          }
+        },
+        "required": [
+          "attempt_id",
+          "proposal_id",
+          "kind",
+          "result"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "apply"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            "then": {
+              "properties": {
+                "attempt_id": {
+                  "$ref": "../defs.json#/$defs/attempt_id"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "attempt_id": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "maxItems": 1000
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "already_running",
+          "cleanup_incomplete",
+          "recovery_busy"
+        ]
+      },
+      "maxItems": 3,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "dry_run",
+    "removed",
+    "recoveries",
+    "warnings"
+  ],
+  "additionalProperties": false
+}

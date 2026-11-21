@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/slot/artifact.json",
+  "title": "proposal artifact",
+  "description": "proposal.json: the closed shape the model writes (at most 65536 bytes, checked by the tool). All model text is untrusted. old uniqueness, non-overlap and limits.max_pairs are tool-enforced.",
+  "type": "object",
+  "properties": {
+    "proposal_id": {
+      "$ref": "../defs.json#/$defs/proposal_id"
+    },
+    "run_token": {
+      "type": "string",
+      "minLength": 16,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_-]{16,128}(?![\\s\\S])"
+    },
+    "target_sha256": {
+      "$ref": "../defs.json#/$defs/sha256"
+    },
+    "marker": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "The bundled skill's marker matches ^[a-z0-9-]{16,64}$; a custom marker (draft.skill_marker) is any 1 to 256 characters."
+    },
+    "outcome": {
+      "$ref": "../defs.json#/$defs/outcome"
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000,
+      "x-untrusted": true,
+      "description": "Plain text shown as model text."
+    },
+    "replacements": {
+      "type": "array",
+      "items": {
+        "$ref": "../defs.json#/$defs/replacement"
+      },
+      "maxItems": 100,
+      "description": "edit: 1 to limits.max_pairs pairs; no_change: empty."
+    }
+  },
+  "required": [
+    "proposal_id",
+    "run_token",
+    "target_sha256",
+    "marker",
+    "outcome",
+    "rationale",
+    "replacements"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "const": "edit"
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "properties": {
+          "replacements": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "const": "no_change"
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "properties": {
+          "replacements": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ]
+}

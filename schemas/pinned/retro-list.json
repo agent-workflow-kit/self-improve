@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/pinned/retro-list.json",
+  "title": "retro list output",
+  "description": "PINNED tolerant copy of session-audit's retro-list output; extra fields are ignored. Newest first. Reads the store only.",
+  "type": "object",
+  "properties": {
+    "retros": {
+      "type": "array",
+      "items": {
+        "$ref": "session-audit-defs.json#/$defs/retro_row"
+      },
+      "maxItems": 1000
+    },
+    "truncated": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "retros",
+    "truncated"
+  ],
+  "additionalProperties": true
+}

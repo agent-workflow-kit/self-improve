@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/cli/propose.json",
+  "title": "propose output",
+  "description": "Exit 0 when every selected candidate produced a proposal; otherwise the first non-zero candidate's code in candidate order, with the result object still on stdout.",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "proposals": {
+          "type": "array",
+          "items": {
+            "$ref": "../defs.json#/$defs/proposal"
+          },
+          "maxItems": 20
+        },
+        "skipped": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "candidate": {
+                "$ref": "../defs.json#/$defs/candidate_id"
+              },
+              "reason": {
+                "enum": [
+                  "daily_limit",
+                  "interrupted"
+                ]
+              }
+            },
+            "required": [
+              "candidate",
+              "reason"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 20
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "$ref": "../defs.json#/$defs/command_warning"
+          },
+          "maxItems": 8,
+          "uniqueItems": true
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "../defs.json#/$defs/error"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "proposals",
+        "skipped",
+        "warnings",
+        "error"
+      ],
+      "additionalProperties": false,
+      "description": "Result: stored proposals (any state), skipped candidates and the first non-zero candidate's envelope (null when every candidate succeeded). A documented exception to the envelope-on-non-zero rule."
+    },
+    {
+      "$ref": "../defs.json#/$defs/dry_run_propose"
+    }
+  ]
+}

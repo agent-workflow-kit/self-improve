@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/cli/export.json",
+  "title": "export line",
+  "description": "One line of the audit log (schemas/audit.json).",
+  "$ref": "../audit.json"
+}

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/cli/plan.json",
+  "title": "accept and undo --dry-run output",
+  "description": "Nothing is written; no model, retro or file text. yes_allowed is false for the sensitive tier. An exit 13 or 20 envelope of accept carries details.plan_sha256 when a plan exists.",
+  "type": "object",
+  "properties": {
+    "plan": {
+      "$ref": "../defs.json#/$defs/plan"
+    },
+    "plan_sha256": {
+      "$ref": "../defs.json#/$defs/sha256"
+    },
+    "tier": {
+      "$ref": "../defs.json#/$defs/plan_tier"
+    },
+    "needs_allow_sensitive": {
+      "type": "boolean"
+    },
+    "yes_allowed": {
+      "type": "boolean"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "$ref": "../defs.json#/$defs/output_warning"
+      },
+      "maxItems": 16,
+      "uniqueItems": true
+    },
+    "summary": {
+      "$ref": "../defs.json#/$defs/summary"
+    }
+  },
+  "required": [
+    "plan",
+    "plan_sha256",
+    "tier",
+    "needs_allow_sensitive",
+    "yes_allowed",
+    "warnings",
+    "summary"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "tier": {
+            "const": "sensitive"
+          }
+        },
+        "required": [
+          "tier"
+        ]
+      },
+      "then": {
+        "properties": {
+          "needs_allow_sensitive": {
+            "const": true
+          },
+          "yes_allowed": {
+            "const": false
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "needs_allow_sensitive": {
+            "const": false
+          },
+          "yes_allowed": {
+            "const": true
+          }
+        }
+      }
+    }
+  ]
+}

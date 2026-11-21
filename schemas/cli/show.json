@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/cli/show.json",
+  "title": "show output",
+  "description": "The Proposal object; diff is present only with --diff.",
+  "$ref": "../defs.json#/$defs/proposal"
+}

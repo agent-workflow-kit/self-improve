@@ -1,0 +1,21 @@
+# Permission profile for the self-improve drafting session. It only adds denies on top of the
+# rules claude-session generates, and it allows no network access.
+permissions:
+  deny:
+    - Agent
+    - Task
+    - WebFetch
+    - WebSearch
+    - NotebookEdit
+    - "mcp__*"
+    - "Bash(memoctl:*)"
+    - "Bash(agent-spawn:*)"
+    - "Bash(forgectl:*)"
+    - "Bash(ticketctl:*)"
+    - "Bash(notice-route:*)"
+    - "Bash(awkit:*)"
+    - "Bash(session-audit:*)"
+    - "Bash(self-improve:*)"
+sandbox:
+  network:
+    allowedDomains: []

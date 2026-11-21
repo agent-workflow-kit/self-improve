@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "self-improve/cli/reject.json",
+  "title": "reject output",
+  "description": "The Proposal object after reject, or with --dry-run {dry_run, proposal_id, state, to}.",
+  "oneOf": [
+    {
+      "$ref": "../defs.json#/$defs/proposal"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "dry_run": {
+          "const": true
+        },
+        "proposal_id": {
+          "$ref": "../defs.json#/$defs/proposal_id"
+        },
+        "state": {
+          "$ref": "../defs.json#/$defs/state"
+        },
+        "to": {
+          "const": "rejected"
+        }
+      },
+      "required": [
+        "dry_run",
+        "proposal_id",
+        "state",
+        "to"
+      ],
+      "additionalProperties": false
+    }
+  ]
+}
