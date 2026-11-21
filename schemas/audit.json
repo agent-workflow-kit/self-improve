@@ -12,10 +12,7 @@
       "$ref": "defs.json#/$defs/actor"
     },
     "actor_source": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 64,
-      "pattern": "^[a-z][a-z0-9_-]{0,63}(?![\\s\\S])"
+      "$ref": "defs.json#/$defs/actor_source"
     },
     "stdin_tty": {
       "type": "boolean"
@@ -35,10 +32,7 @@
       ]
     },
     "attempt_id": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 128,
-      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}(?![\\s\\S])",
+      "$ref": "defs.json#/$defs/attempt_id",
       "description": "Shared by the attempted and outcome records."
     },
     "action": {

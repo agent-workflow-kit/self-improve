@@ -76,7 +76,7 @@
           "properties": {
             "consecutive_failures": {
               "type": "integer",
-              "minimum": 1
+              "minimum": 3
             },
             "first_failed_at": {
               "$ref": "../defs.json#/$defs/timestamp"
@@ -153,6 +153,9 @@
         "properties": {
           "object_type": {
             "const": "scan"
+          },
+          "object_id": {
+            "$ref": "../defs.json#/$defs/scan_run_id"
           },
           "details": {
             "required": [

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "self-improve/cli/scan.json",
   "title": "scan output",
-  "description": "Printed on exit 0. A disabled scan or nothing new is exit 22 with the error envelope.",
+  "description": "Printed on exit 0. A disabled scan or nothing new is exit 22 with the error envelope; a failed hard dependency is exit 12.",
   "type": "object",
   "properties": {
     "retros": {
@@ -25,6 +25,18 @@
       "type": "integer",
       "minimum": 0
     },
+    "filtered": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "capped": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "deferred": {
+      "type": "integer",
+      "minimum": 0
+    },
     "proposals": {
       "type": "array",
       "items": {
@@ -36,10 +48,13 @@
       "type": "array",
       "items": {
         "enum": [
-          "already_running"
+          "already_running",
+          "retro_list_truncated",
+          "recovery_busy",
+          "recovery_pending"
         ]
       },
-      "maxItems": 2,
+      "maxItems": 4,
       "uniqueItems": true
     }
   },
@@ -49,6 +64,9 @@
     "unresolved",
     "failed",
     "skipped",
+    "filtered",
+    "capped",
+    "deferred",
     "proposals",
     "warnings"
   ],

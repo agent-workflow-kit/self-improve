@@ -19,7 +19,7 @@
     },
     "proposal_id": {
       "type": "string",
-      "minLength": 7,
+      "minLength": 11,
       "maxLength": 11,
       "pattern": "^sp-[a-z2-7]{8}(?![\\s\\S])",
       "description": "sp- plus 8 lowercase base32 characters (a prefix of at least 4 is accepted on input only)."
@@ -76,15 +76,44 @@
       "maxLength": 256,
       "pattern": "^[A-Za-z0-9._:/#@+=,-]{0,256}(?![\\s\\S])"
     },
+    "label": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 321,
+      "pattern": "^[a-z0-9][a-z0-9_.-]{0,63}=[A-Za-z0-9._:/#@+=,-]{0,256}(?![\\s\\S])",
+      "description": "One k=v label (guide section 9 multiset form; notice-route reads it)."
+    },
     "labels": {
+      "type": "array",
+      "items": {
+        "$ref": "defs.json#/$defs/label"
+      },
+      "maxItems": 64,
+      "uniqueItems": true,
+      "description": "An array of k=v strings, never an object."
+    },
+    "revision_error": {
       "type": "object",
-      "propertyNames": {
-        "$ref": "defs.json#/$defs/label_key"
+      "properties": {
+        "reason": {
+          "$ref": "defs.json#/$defs/failed_reason"
+        },
+        "run": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 1000
+        },
+        "at": {
+          "$ref": "defs.json#/$defs/timestamp"
+        }
       },
-      "additionalProperties": {
-        "$ref": "defs.json#/$defs/label_value"
-      },
-      "maxProperties": 64
+      "required": [
+        "reason",
+        "run",
+        "at"
+      ],
+      "additionalProperties": false,
+      "description": "The last failed edit run; the proposal itself is unchanged by it."
     },
     "decision_id": {
       "type": "string",
@@ -161,6 +190,46 @@
         "resolve"
       ]
     },
+    "actor_source": {
+      "enum": [
+        "flag",
+        "tty",
+        "default"
+      ]
+    },
+    "attempt_id": {
+      "type": "string",
+      "minLength": 29,
+      "maxLength": 29,
+      "pattern": "^at-[a-z2-7]{26}(?![\\s\\S])",
+      "description": "at- plus 26 lowercase base32 characters."
+    },
+    "scan_run_id": {
+      "type": "string",
+      "minLength": 11,
+      "maxLength": 11,
+      "pattern": "^sr-[a-z2-7]{8}(?![\\s\\S])",
+      "description": "sr- plus 8 lowercase base32."
+    },
+    "invalid_edit_rule": {
+      "enum": [
+        "old_not_unique",
+        "old_not_found",
+        "old_equals_new",
+        "overlap",
+        "too_many_pairs",
+        "refused_char",
+        "line_ending",
+        "final_newline",
+        "too_large",
+        "ratio",
+        "diff_too_long",
+        "parse",
+        "contains_secret",
+        "frontmatter_key",
+        "exec_or_import_line"
+      ]
+    },
     "action": {
       "enum": [
         "accept",
@@ -178,33 +247,24 @@
     },
     "failed_reason": {
       "enum": [
-        "claude_session_missing",
-        "claude_session_too_old",
-        "session_audit_missing",
-        "session_audit_too_old",
-        "store_unwritable",
-        "skill_not_found",
-        "unsafe_plugin_dir",
-        "launch_settings_mismatch",
         "session_not_started",
         "claude_session_error",
-        "session_audit_error",
         "no_artifact",
         "artifact_invalid",
         "identity_mismatch",
         "marker_mismatch",
         "invalid_edit",
-        "write_failed",
-        "crontab_unavailable",
         "session_blocked",
         "session_needs_input",
-        "runner_lost",
-        "hook_escalated",
         "session_unreported",
         "session_killed",
         "session_timeout",
         "session_lost",
-        "session_failed"
+        "session_failed",
+        "runner_lost",
+        "hook_escalated",
+        "interrupted",
+        "write_failed"
       ]
     },
     "refused_reason": {
@@ -217,48 +277,50 @@
       "enum": [
         "user",
         "superseded",
-        "hook_vetoed"
+        "hook_vetoed",
+        "expired"
       ]
     },
     "reason": {
       "enum": [
-        "claude_session_missing",
-        "claude_session_too_old",
-        "session_audit_missing",
-        "session_audit_too_old",
-        "store_unwritable",
-        "skill_not_found",
-        "unsafe_plugin_dir",
-        "launch_settings_mismatch",
         "session_not_started",
         "claude_session_error",
-        "session_audit_error",
         "no_artifact",
         "artifact_invalid",
         "identity_mismatch",
         "marker_mismatch",
         "invalid_edit",
-        "write_failed",
-        "crontab_unavailable",
         "session_blocked",
         "session_needs_input",
-        "runner_lost",
-        "hook_escalated",
         "session_unreported",
         "session_killed",
         "session_timeout",
         "session_lost",
         "session_failed",
+        "runner_lost",
+        "hook_escalated",
+        "interrupted",
+        "write_failed",
         "refused_target",
         "plugin_cache",
         "user",
         "superseded",
-        "hook_vetoed"
+        "hook_vetoed",
+        "expired"
       ],
       "description": "Closed reason of a failed, refused or rejected proposal."
     },
     "exit12_reason": {
       "enum": [
+        "session_not_started",
+        "claude_session_error",
+        "no_artifact",
+        "artifact_invalid",
+        "identity_mismatch",
+        "marker_mismatch",
+        "invalid_edit",
+        "runner_lost",
+        "write_failed",
         "claude_session_missing",
         "claude_session_too_old",
         "session_audit_missing",
@@ -267,15 +329,7 @@
         "skill_not_found",
         "unsafe_plugin_dir",
         "launch_settings_mismatch",
-        "session_not_started",
-        "claude_session_error",
         "session_audit_error",
-        "no_artifact",
-        "artifact_invalid",
-        "identity_mismatch",
-        "marker_mismatch",
-        "invalid_edit",
-        "write_failed",
         "crontab_unavailable"
       ]
     },
@@ -298,17 +352,80 @@
         "store_newer",
         "cron_block_malformed",
         "retro_not_done",
-        "declined"
+        "declined",
+        "revision_limit",
+        "backup_corrupt",
+        "state_unsafe"
       ]
     },
     "warning": {
       "enum": [
         "changed_share_above_half_cap",
-        "permissions_allow_grew",
-        "allow_deny_line_touched",
+        "trust_key_changed",
         "retro_redacted",
-        "weaker_apply_guarantee"
+        "weaker_apply_guarantee",
+        "last_revision_failed",
+        "context_truncated"
       ]
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "proposal_id": {
+          "$ref": "defs.json#/$defs/proposal_id"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "target_path": {
+          "$ref": "defs.json#/$defs/path"
+        },
+        "pairs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "added_lines": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "removed_lines": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "changed_ratio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "diff_lines": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "new_text_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "risk": {
+          "$ref": "defs.json#/$defs/risk"
+        }
+      },
+      "required": [
+        "proposal_id",
+        "revision",
+        "target_path",
+        "pairs",
+        "added_lines",
+        "removed_lines",
+        "changed_ratio",
+        "diff_lines",
+        "new_text_bytes",
+        "risk"
+      ],
+      "additionalProperties": false,
+      "description": "Numbers and a path from the user's own config or flag; no model, retro or file text."
     },
     "replacement": {
       "type": "object",
@@ -457,7 +574,14 @@
           "additionalProperties": false
         },
         "edit_sha256": {
-          "$ref": "defs.json#/$defs/sha256"
+          "anyOf": [
+            {
+              "$ref": "defs.json#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "post_sha256": {
           "$ref": "defs.json#/$defs/sha256"
@@ -473,7 +597,35 @@
         "post_sha256"
       ],
       "additionalProperties": false,
-      "description": "The fields hashed into plan_sha256 (canonical JSON, see the interface)."
+      "description": "The fields hashed into plan_sha256 (canonical JSON, see the interface). edit_sha256 is null for undo.",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "action": {
+                "const": "accept"
+              }
+            },
+            "required": [
+              "action"
+            ]
+          },
+          "then": {
+            "properties": {
+              "edit_sha256": {
+                "$ref": "defs.json#/$defs/sha256"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "edit_sha256": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
     },
     "proposal": {
       "type": "object",
@@ -531,11 +683,15 @@
           "minimum": 0,
           "maximum": 1000
         },
-        "revisions": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 1000,
-          "description": "A count of revisions drafted."
+        "last_revision_error": {
+          "anyOf": [
+            {
+              "$ref": "defs.json#/$defs/revision_error"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "outcome": {
           "anyOf": [
@@ -712,7 +868,7 @@
         "target",
         "source",
         "revision",
-        "revisions",
+        "last_revision_error",
         "outcome",
         "rationale",
         "replacements",
@@ -751,6 +907,12 @@
               "target": {
                 "type": "null"
               },
+              "source": {
+                "type": "null"
+              },
+              "revision": {
+                "const": 0
+              },
               "outcome": {
                 "type": "null"
               },
@@ -758,6 +920,34 @@
                 "maxItems": 0
               },
               "csession_id": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "drafting",
+                  "unresolved",
+                  "refused",
+                  "failed",
+                  "stale",
+                  "applied",
+                  "rejected",
+                  "undone"
+                ]
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "last_revision_error": {
                 "type": "null"
               }
             }
@@ -1027,6 +1217,9 @@
           "minimum": 0,
           "maximum": 1000
         },
+        "labels": {
+          "$ref": "defs.json#/$defs/labels"
+        },
         "updated_at": {
           "$ref": "defs.json#/$defs/timestamp"
         }
@@ -1041,19 +1234,30 @@
         "tier",
         "risk",
         "revision",
+        "labels",
         "updated_at"
       ],
       "additionalProperties": false,
-      "description": "One row of list: no model text."
+      "description": "One row of list: no model text and no session id."
     },
     "check": {
       "type": "object",
       "properties": {
         "name": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 64,
-          "pattern": "^[a-z][a-z0-9_]{0,63}(?![\\s\\S])"
+          "enum": [
+            "config",
+            "config_safety",
+            "state_dir",
+            "claude_session",
+            "session_audit",
+            "plugin",
+            "profile",
+            "skill_preflight",
+            "crontab",
+            "env_file",
+            "launch_plan",
+            "retro_list"
+          ]
         },
         "ok": {
           "type": "boolean"
@@ -1108,6 +1312,15 @@
           "properties": {
             "reason": {
               "enum": [
+                "session_not_started",
+                "claude_session_error",
+                "no_artifact",
+                "artifact_invalid",
+                "identity_mismatch",
+                "marker_mismatch",
+                "invalid_edit",
+                "runner_lost",
+                "write_failed",
                 "claude_session_missing",
                 "claude_session_too_old",
                 "session_audit_missing",
@@ -1116,15 +1329,7 @@
                 "skill_not_found",
                 "unsafe_plugin_dir",
                 "launch_settings_mismatch",
-                "session_not_started",
-                "claude_session_error",
                 "session_audit_error",
-                "no_artifact",
-                "artifact_invalid",
-                "identity_mismatch",
-                "marker_mismatch",
-                "invalid_edit",
-                "write_failed",
                 "crontab_unavailable",
                 "refused_target",
                 "plugin_cache",
@@ -1144,6 +1349,9 @@
                 "cron_block_malformed",
                 "retro_not_done",
                 "declined",
+                "revision_limit",
+                "backup_corrupt",
+                "state_unsafe",
                 "scan_disabled",
                 "no_new_candidates",
                 "no_candidates",
@@ -1152,14 +1360,13 @@
                 "session_blocked",
                 "session_needs_input",
                 "mode_unsupported",
-                "confirmation_required",
                 "config_invalid",
-                "runner_lost",
                 "session_unreported",
                 "session_killed",
                 "session_timeout",
                 "session_lost",
-                "session_failed"
+                "session_failed",
+                "interrupted"
               ]
             },
             "retryable": {
@@ -1185,6 +1392,14 @@
             },
             "plan_sha256": {
               "$ref": "defs.json#/$defs/sha256"
+            },
+            "expected": {
+              "type": "array",
+              "items": {
+                "$ref": "defs.json#/$defs/state"
+              },
+              "maxItems": 10,
+              "uniqueItems": true
             },
             "rule": {
               "type": "string",
@@ -1409,6 +1624,68 @@
                     "const": "hook_vetoed"
                   }
                 }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "details": {
+                "properties": {
+                  "reason": {
+                    "const": "invalid_edit"
+                  }
+                },
+                "required": [
+                  "reason"
+                ]
+              }
+            },
+            "required": [
+              "details"
+            ]
+          },
+          "then": {
+            "properties": {
+              "details": {
+                "required": [
+                  "rule"
+                ],
+                "properties": {
+                  "rule": {
+                    "$ref": "defs.json#/$defs/invalid_edit_rule"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "details": {
+                "properties": {
+                  "reason": {
+                    "const": "not_ready"
+                  }
+                },
+                "required": [
+                  "reason"
+                ]
+              }
+            },
+            "required": [
+              "details"
+            ]
+          },
+          "then": {
+            "properties": {
+              "details": {
+                "required": [
+                  "state",
+                  "expected"
+                ]
               }
             }
           }

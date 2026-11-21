@@ -141,6 +141,18 @@
         "skipped": {
           "type": "integer",
           "minimum": 0
+        },
+        "filtered": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "capped": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "deferred": {
+          "type": "integer",
+          "minimum": 0
         }
       },
       "required": [
@@ -150,7 +162,50 @@
         "drafted",
         "unresolved",
         "failed",
-        "skipped"
+        "skipped",
+        "filtered",
+        "capped",
+        "deferred"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "ts": {
+          "$ref": "defs.json#/$defs/timestamp"
+        },
+        "actor": {
+          "$ref": "defs.json#/$defs/actor"
+        },
+        "action": {
+          "const": "recovered"
+        },
+        "attempt_id": {
+          "$ref": "defs.json#/$defs/attempt_id"
+        },
+        "proposal_id": {
+          "$ref": "defs.json#/$defs/proposal_id"
+        },
+        "apply_action": {
+          "$ref": "defs.json#/$defs/action"
+        },
+        "result": {
+          "enum": [
+            "applied",
+            "undone",
+            "failed",
+            "stale"
+          ]
+        }
+      },
+      "required": [
+        "ts",
+        "action",
+        "attempt_id",
+        "proposal_id",
+        "apply_action",
+        "result"
       ],
       "additionalProperties": false
     },

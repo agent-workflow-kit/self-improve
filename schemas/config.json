@@ -66,7 +66,8 @@
         "skill_marker": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 256
+          "maxLength": 256,
+          "description": "Required when draft.skill is not self-improve:improve (checked by the tool)."
         },
         "plugin_dirs": {
           "type": "array",
@@ -95,10 +96,10 @@
               "type": "string",
               "minLength": 1,
               "maxLength": 32,
-              "pattern": "^(?!0+(\\.0+)?(ms|s|m)?(?![\\s\\S]))(?:[0-9]{1,9}(\\.[0-9]+)?(s|m|h)?|[1-9][0-9]{3,8}ms)(?![\\s\\S])"
+              "pattern": "^(?!0+(\\.0+)?(s|m)?(?![\\s\\S]))[0-9]{1,9}(\\.[0-9]+)?(s|m)?(?![\\s\\S])"
             }
           ],
-          "description": "Session timeout, 1 s to 2 h (range checked by the tool for strings).",
+          "description": "Session timeout: seconds or s/m, 1 s to 120 m (range checked by the tool for strings).",
           "default": "10m"
         },
         "max_turns": {
@@ -120,19 +121,6 @@
             "off"
           ],
           "default": "required"
-        },
-        "setting_sources": {
-          "type": "array",
-          "items": {
-            "enum": [
-              "user",
-              "project",
-              "local"
-            ]
-          },
-          "uniqueItems": true,
-          "maxItems": 3,
-          "default": []
         },
         "env_allowlist": {
           "type": "array",
@@ -301,7 +289,7 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 1000000,
-          "default": 2000
+          "default": 600
         }
       },
       "required": [],
@@ -318,6 +306,18 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 1000,
+          "default": 5
+        },
+        "max_per_day": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000,
+          "default": 10
+        },
+        "max_per_retro": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
           "default": 5
         },
         "risk": {
@@ -367,7 +367,8 @@
           },
           "maxItems": 64,
           "uniqueItems": true,
-          "default": []
+          "default": [],
+          "description": "In addition to the secret-name shapes."
         }
       },
       "required": [],
@@ -381,12 +382,20 @@
           "default": "90d"
         },
         "backups": {
-          "$ref": "#/$defs/duration",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^(?:([7-9]|[1-9][0-9]{1,8})d|(16[89]|1[7-9][0-9]|[2-9][0-9]{2}|[1-9][0-9]{3,8})h)(?![\\s\\S])",
+          "description": "A duration in h or d of at least 7d. A safety key: config file only, no environment variable.",
           "default": "90d"
         },
         "scanned": {
           "$ref": "#/$defs/duration",
           "default": "180d"
+        },
+        "open": {
+          "$ref": "#/$defs/duration",
+          "default": "60d"
         }
       },
       "required": [],

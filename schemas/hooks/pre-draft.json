@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "self-improve/hooks/pre-draft.json",
   "title": "pre-draft hook payload",
-  "description": "Stdin JSON, after the proposal row and lease exist and before any model run. Exit 0 continue; 13 escalate; other non-zero, timeout or signal veto. No retro, candidate, model or file text.",
+  "description": "Stdin JSON, after the proposal row and lease exist (or an edit run is reserved) and before any model run. Exit 0 continue; 13 escalate; other non-zero, timeout or signal veto. No retro, candidate, model or file text.",
   "type": "object",
   "properties": {
     "tool": {
@@ -38,6 +38,12 @@
     "candidate_id": {
       "$ref": "../defs.json#/$defs/candidate_id"
     },
+    "revision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000,
+      "description": "1 for a first draft; the new revision number (at least 2) for an edit."
+    },
     "target_class": {
       "$ref": "../defs.json#/$defs/target_class"
     },
@@ -71,6 +77,7 @@
     "tainted",
     "retro_id",
     "candidate_id",
+    "revision",
     "target_class",
     "risk",
     "tier",

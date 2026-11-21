@@ -58,11 +58,15 @@
       "minimum": 0,
       "maximum": 1000
     },
-    "revisions": {
-      "type": "integer",
-      "minimum": 0,
-      "maximum": 1000,
-      "description": "A count of revisions drafted."
+    "last_revision_error": {
+      "anyOf": [
+        {
+          "$ref": "../defs.json#/$defs/revision_error"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "outcome": {
       "anyOf": [
@@ -246,7 +250,7 @@
     "target",
     "source",
     "revision",
-    "revisions",
+    "last_revision_error",
     "outcome",
     "rationale",
     "replacements",
@@ -284,6 +288,12 @@
           "target": {
             "type": "null"
           },
+          "source": {
+            "type": "null"
+          },
+          "revision": {
+            "const": 0
+          },
           "outcome": {
             "type": "null"
           },
@@ -291,6 +301,34 @@
             "maxItems": 0
           },
           "csession_id": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "enum": [
+              "drafting",
+              "unresolved",
+              "refused",
+              "failed",
+              "stale",
+              "applied",
+              "rejected",
+              "undone"
+            ]
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "last_revision_error": {
             "type": "null"
           }
         }

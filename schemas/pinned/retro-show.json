@@ -1,20 +1,20 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "self-improve/cli/retro-show.json",
+  "$id": "self-improve/pinned/retro-show.json",
   "title": "retro show output",
   "description": "PINNED tolerant copy of session-audit's retro-show output; extra fields are ignored. The Retro object, including the artifact fields; digest is present only with --digest (null when pruned) and is untrusted fenced text.",
   "type": "object",
   "properties": {
     "id": {
-      "$ref": "../pinned/session-audit-defs.json#/$defs/retro_id"
+      "$ref": "session-audit-defs.json#/$defs/retro_id"
     },
     "state": {
-      "$ref": "../pinned/session-audit-defs.json#/$defs/retro_state"
+      "$ref": "session-audit-defs.json#/$defs/retro_state"
     },
     "reason": {
       "anyOf": [
         {
-          "$ref": "../pinned/session-audit-defs.json#/$defs/retro_reason"
+          "$ref": "session-audit-defs.json#/$defs/retro_reason"
         },
         {
           "type": "null"
@@ -22,10 +22,10 @@
       ]
     },
     "key": {
-      "$ref": "../pinned/session-audit-defs.json#/$defs/sha256"
+      "$ref": "session-audit-defs.json#/$defs/sha256"
     },
     "scope": {
-      "$ref": "../pinned/session-audit-defs.json#/$defs/scope"
+      "$ref": "session-audit-defs.json#/$defs/scope"
     },
     "scope_resolved": {
       "type": "object",
@@ -33,7 +33,7 @@
         "since": {
           "anyOf": [
             {
-              "$ref": "../pinned/session-audit-defs.json#/$defs/timestamp"
+              "$ref": "session-audit-defs.json#/$defs/timestamp"
             },
             {
               "type": "null"
@@ -43,7 +43,7 @@
         "until": {
           "anyOf": [
             {
-              "$ref": "../pinned/session-audit-defs.json#/$defs/timestamp"
+              "$ref": "session-audit-defs.json#/$defs/timestamp"
             },
             {
               "type": "null"
@@ -58,12 +58,12 @@
       "additionalProperties": true
     },
     "coverage": {
-      "$ref": "../pinned/session-audit-defs.json#/$defs/coverage"
+      "$ref": "session-audit-defs.json#/$defs/coverage"
     },
     "skipped": {
       "type": "array",
       "items": {
-        "$ref": "../pinned/session-audit-defs.json#/$defs/skipped"
+        "$ref": "session-audit-defs.json#/$defs/skipped"
       },
       "maxItems": 1000
     },
@@ -73,15 +73,15 @@
         "type": "object",
         "properties": {
           "ref": {
-            "$ref": "../pinned/session-audit-defs.json#/$defs/ref"
+            "$ref": "session-audit-defs.json#/$defs/ref"
           },
           "session_id": {
-            "$ref": "../pinned/session-audit-defs.json#/$defs/session_id"
+            "$ref": "session-audit-defs.json#/$defs/session_id"
           },
           "csession_id": {
             "anyOf": [
               {
-                "$ref": "../pinned/session-audit-defs.json#/$defs/csession_id"
+                "$ref": "session-audit-defs.json#/$defs/csession_id"
               },
               {
                 "type": "null"
@@ -100,7 +100,7 @@
       "description": "The kept sessions, for mapping evidence refs to sessions."
     },
     "skill": {
-      "$ref": "../pinned/session-audit-defs.json#/$defs/skill"
+      "$ref": "session-audit-defs.json#/$defs/skill"
     },
     "model": {
       "anyOf": [
@@ -115,15 +115,15 @@
       ]
     },
     "created_at": {
-      "$ref": "../pinned/session-audit-defs.json#/$defs/timestamp"
+      "$ref": "session-audit-defs.json#/$defs/timestamp"
     },
     "updated_at": {
-      "$ref": "../pinned/session-audit-defs.json#/$defs/timestamp"
+      "$ref": "session-audit-defs.json#/$defs/timestamp"
     },
     "finished_at": {
       "anyOf": [
         {
-          "$ref": "../pinned/session-audit-defs.json#/$defs/timestamp"
+          "$ref": "session-audit-defs.json#/$defs/timestamp"
         },
         {
           "type": "null"
@@ -133,7 +133,7 @@
     "csession_id": {
       "anyOf": [
         {
-          "$ref": "../pinned/session-audit-defs.json#/$defs/csession_id"
+          "$ref": "session-audit-defs.json#/$defs/csession_id"
         },
         {
           "type": "null"
@@ -165,7 +165,7 @@
     "outcome": {
       "anyOf": [
         {
-          "$ref": "../pinned/session-audit-defs.json#/$defs/token"
+          "$ref": "session-audit-defs.json#/$defs/token"
         },
         {
           "type": "null"
@@ -216,7 +216,7 @@
     "again_of": {
       "anyOf": [
         {
-          "$ref": "../pinned/session-audit-defs.json#/$defs/retro_id"
+          "$ref": "session-audit-defs.json#/$defs/retro_id"
         },
         {
           "type": "null"
@@ -224,10 +224,10 @@
       ]
     },
     "counts": {
-      "$ref": "../pinned/session-audit-defs.json#/$defs/retro_counts"
+      "$ref": "session-audit-defs.json#/$defs/retro_counts"
     },
     "metrics": {
-      "$ref": "../pinned/session-audit-defs.json#/$defs/retro_metrics"
+      "$ref": "session-audit-defs.json#/$defs/retro_metrics"
     },
     "dropped": {
       "type": "object",
@@ -263,14 +263,14 @@
     "findings": {
       "type": "array",
       "items": {
-        "$ref": "../pinned/session-audit-defs.json#/$defs/finding"
+        "$ref": "session-audit-defs.json#/$defs/finding"
       },
       "maxItems": 50
     },
     "candidates": {
       "type": "array",
       "items": {
-        "$ref": "../pinned/session-audit-defs.json#/$defs/stored_candidate"
+        "$ref": "session-audit-defs.json#/$defs/stored_candidate"
       },
       "maxItems": 20
     },

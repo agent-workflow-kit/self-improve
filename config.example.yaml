@@ -1,23 +1,23 @@
 # Example config for self-improve. Location: ~/.config/self-improve/config.yaml (drop-ins: config.d/*.yaml).
 # Every key is optional; the values shown are the defaults unless marked "example". See docs/interface.md (Config).
+# The file, config.d/ and every directory up to the home directory must not be symlinks, group- or other-writable.
 
 me:
-  name: example-user          # example: name for human: actors when the terminal user cannot be derived
+  name: example-user          # example: name for human: actors; default: the OS user name
 
 draft:
   skill: self-improve:improve   # plugin:skill of the drafting skill
-  # skill_marker: my-custom-marker   # marker for a custom skill (the bundled skill's marker file is used otherwise)
+  # skill_marker: my-custom-marker   # required when skill is not self-improve:improve (the bundled skill's references/marker.txt is used otherwise)
   plugin_dirs: []               # extra plugin directories, absolute paths, at most 8
   # model: haiku                # model for drafts (a cheap model is recommended); default: claude-session's
-  timeout: 10m                  # session timeout, 1 s to 2 h
+  timeout: 10m                  # session timeout: seconds or s/m, 1 s to 120 m
   max_turns: 12                 # turn bound
   # permission_profile: /absolute/path/improve-draft.yaml   # default: the bundled improve-draft.yaml
-  sandbox: required             # required, preferred or off (lowering needs a terminal)
-  setting_sources: []           # setting sources to load
+  sandbox: required             # required, preferred or off (validate warns when lowered)
   env_allowlist: [PATH, HOME, USER, LANG, TERM]   # names passed with --env-allowlist-only
   tools: [Read, Write, Bash, Skill]               # passed with --tools
 
-targets: []                     # named targets
+targets: []                     # named targets; an entry can raise a tier (sensitive: true), never lower it
 # targets:
 #   - name: my-skill            # example entry
 #     aliases: [my-skill-alias]
@@ -35,23 +35,26 @@ limits:
   target_max_bytes: 262144      # target size cap
   new_text_max_bytes: 65536     # sum of new text per edit
   max_pairs: 20                 # find/replace pairs per edit
-  max_changed_ratio: 0.30       # changed-line share cap
+  max_changed_ratio: 0.30       # changed-line share cap (invalid_edit at draft, too_large at accept)
 
 display:
-  max_lines: 2000               # diff lines before accept refuses to confirm
+  max_lines: 600                # rendered diff lines; a longer diff is invalid_edit at draft and too_large at accept
 
 scan:
   enabled: false                # enables the scan command
   max_per_run: 5                # model runs per scan call
+  max_per_day: 10               # scan's model runs per UTC day, counted inside limits.drafts_per_day
+  max_per_retro: 5              # total model runs scan spends on one retro
   risk: [high, medium]          # candidate risks scan drafts
   classes: [skill, instructions_file, config, permission_profile, workflow]   # candidate target classes scan drafts
 
 redaction:
-  mask_env: []                  # variables whose values may never appear in new text
+  mask_env: []                  # variables whose values are never staged or written, in addition to the secret-name shapes (TOKEN, SECRET, PASSWORD, KEY, ...)
 
 retention:
   proposals: 90d                # terminal proposals
-  backups: 90d                  # pre-images of applied proposals
+  backups: 90d                  # pre-images of applied proposals; config file only, at least 7d
   scanned: 180d                 # scanned-retro records
+  open: 60d                     # unresolved, ready or no_change proposals not updated for this long become rejected (expired)
 
 hooks: {}                       # pre-draft, pre-accept, post-accept, post-attention: lists of {cmd, timeout, async}
