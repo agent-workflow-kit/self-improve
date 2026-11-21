@@ -66,7 +66,7 @@ This plan implements [`interface.md`](interface.md) (the single normative source
 ## Stage 4: Drafting
 
 **Goal**: Run one isolated headless draft and store a validated proposal.
-**Success Criteria**: The skill preflight, launch plan check (first draft assertions), staging, prompt and start-and-adopt sequence work with the fakes and, in the live suite, with a real cheap model; the artifact validator enforces every documented check in order; outcome mapping, the sandbox check, cleanup and recovery by stored session id behave per the tables; the bundled skill, marker and profile ship in the wheel.
+**Success Criteria**: The skill preflight, launch plan check (first draft assertions, including the `file:<sha256 prefix>` profile label check), staging, prompt and start-and-adopt sequence work with the fakes and, in the live suite, with a real cheap model; the artifact validator enforces every documented check in order; outcome mapping, the sandbox check, cleanup and recovery by stored session id behave per the tables; the bundled skill, marker and profile ship in the wheel.
 **Tests**: scripted fakes for each outcome row; artifact validator negative corpus; recovery after a kill at each point; packaging test for the hidden plugin directory; live: the real round trip, an injected candidate, a vague candidate giving `no_change` (this stage's live gate is the 0.x release gate).
 **Status**: Not Started
 
@@ -74,7 +74,7 @@ This plan implements [`interface.md`](interface.md) (the single normative source
 
 **Goal**: `edit` resumes the drafting session with a person's instruction and replaces the draft only on success.
 **Success Criteria**: The resume passes the full flag set again and the launch plan check accepts only the documented carried origins; a failed revision leaves the proposal unchanged with the failure recorded; revisions are capped; a forgotten session exits `session_gone`; the live target is re-staged and re-hashed.
-**Tests**: fake resume with every failure; the origins fail-closed test; a live headless resume keeping the artifact contract.
+**Tests**: fake resume with every failure; the origins fail-closed test; the profile label test (a path, a wrong prefix and a different profile's hash all fail); a live headless resume keeping the artifact contract.
 **Status**: Not Started
 
 ## Stage 6: Accept, undo and audit
@@ -94,7 +94,7 @@ This plan implements [`interface.md`](interface.md) (the single normative source
 ## Stage 8: Live suite and release readiness
 
 **Goal**: Prove the verified behaviors against the real tools and close the open live checks.
-**Success Criteria**: The live suite passes against current `claude-session` and `session-audit`; the frontmatter keys and `!`/`@` syntax that Claude Code acts on are checked and the line-form rule is adjusted if needed; the resume dry-run origin keys are recorded; the macOS fallback is documented as untested; the README and interface match the implementation.
+**Success Criteria**: The live suite passes against current `claude-session` and `session-audit`; the frontmatter keys and `!`/`@` syntax that Claude Code acts on are checked and the line-form rule is adjusted if needed; the resume dry-run origin keys and the bytes claude-session hashes into `file:<sha256 prefix>` are recorded; the macOS fallback is documented as untested; the README and interface match the implementation.
 **Tests**: the full `live` marker set; a manual checklist for macOS and for another-owner files.
 **Status**: Not Started
 
