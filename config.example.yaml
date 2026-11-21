@@ -48,7 +48,7 @@ scan:
   classes: [skill, instructions_file, config, permission_profile, workflow]   # candidate target classes scan drafts
 
 redaction:
-  mask_env: []                  # variables whose values are never staged or written, in addition to the secret-name shapes (TOKEN, SECRET, PASSWORD and similar; KEY and AUTH as whole words)
+  mask_env: []                  # variables whose values are never staged or written, in addition to the secret-name shapes (TOKEN, SECRET, PASSWORD and similar; KEY, KEYS, AUTH and AUTHORIZATION as whole words)
 
 retention:
   proposals: 90d                # proposals in refused, rejected, failed, stale or undone

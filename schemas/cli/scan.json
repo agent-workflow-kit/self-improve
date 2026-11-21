@@ -63,10 +63,11 @@
           "retro_list_truncated",
           "recovery_busy",
           "recovery_pending",
-          "scan_wedged"
+          "scan_wedged",
+          "retro_abandoned"
         ]
       },
-      "maxItems": 5,
+      "maxItems": 6,
       "uniqueItems": true
     }
   },

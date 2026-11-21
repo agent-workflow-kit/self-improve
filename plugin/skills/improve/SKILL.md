@@ -31,7 +31,7 @@ Exactly one file, `artifacts/proposal.json` in your session directory, matching 
 - `old` and `new` must differ, pairs must not overlap and no `old` may repeat.
 - Keep edits minimal: change only what the candidate asks for, preserve the file's style and format (a JSON, YAML or TOML file must still parse), and keep `new` text well under the limits in `request.json`.
 - Never put secrets, credentials or paths under `~/.ssh` in `new`.
-- For a markdown target, do not change frontmatter other than one-line `description` and `argument-hint` values, never add or change a `---` line, and do not add `!` command lines or `@` imports.
+- For a markdown target, do not change frontmatter other than one-line `description` and `argument-hint` values, never add or change a `---`, `+++` or `...` line and never put one inside a value, and do not add `!` command lines or an `@` followed by any character (only a plain email address is fine), anywhere, frontmatter lines included.
 - Keep the changed lines within the `max_changed_lines` limit in `request.json`.
 - Never name or choose a target path. The target is the staged file.
 - Prefer `no_change` with a short rationale when the candidate is vague, oversized, already satisfied by the target, or would need more than the limits allow.
@@ -46,4 +46,8 @@ This report command is this skill's own instruction (claude-session adds the sta
 claude-session report done --summary-file /absolute/path/to/summary.md --artifact proposal.json
 ```
 
-If you cannot proceed, run `claude-session report needs-input` instead.
+If you cannot proceed, write one plain sentence stating the reason to your summary file and run this instead, with the same literal absolute path twice (claude-session requires a reason for `needs-input`, and you may write only `proposal.json` and the summary file):
+
+```text
+claude-session report needs-input --summary-file /absolute/path/to/summary.md --reason-file /absolute/path/to/summary.md
+```
